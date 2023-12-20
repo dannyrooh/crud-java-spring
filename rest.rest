@@ -1,0 +1,25 @@
+###
+GET http://localhost:3000/grupo/2
+
+###
+GET http://localhost:3000/grupo/all
+
+###
+POST http://localhost:3000/grupo  HTTP/1.1
+content-type: application/json
+
+{
+    "nome" : "Dannyrooh"
+}
+
+###
+PUT http://localhost:3000/grupo  HTTP/1.1
+content-type: application/json
+
+{
+    "id" : 1,
+    "nome" : "Dannyrooh F Campos"
+}
+
+###
+DELETE http://localhost:3000/grupo/12  
