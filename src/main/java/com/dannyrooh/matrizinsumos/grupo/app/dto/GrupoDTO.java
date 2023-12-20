@@ -1,4 +1,4 @@
-package com.dannyrooh.matrizinsumos.grupo.dto;
+package com.dannyrooh.matrizinsumos.grupo.app.dto;
 
 public class GrupoDTO {
 
