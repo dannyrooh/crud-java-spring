@@ -19,7 +19,7 @@ import com.dannyrooh.matrizinsumos.grupo.app.usecase.GrupoUseCase;
 @RequestMapping("/grupo")
 public class GrupoRestController {
 
-    GrupoUseCase grupousecase;
+    private final GrupoUseCase grupousecase;
 
     public GrupoRestController(GrupoUseCase grupousecase) {
         this.grupousecase = grupousecase;
@@ -39,7 +39,8 @@ public class GrupoRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        return ResponseEntity.ok(this.grupousecase.delete(id));
+        boolean deleted = this.grupousecase.delete(id);
+        return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
