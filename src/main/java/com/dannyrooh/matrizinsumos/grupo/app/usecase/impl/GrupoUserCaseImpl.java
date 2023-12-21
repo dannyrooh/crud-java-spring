@@ -1,10 +1,10 @@
 package com.dannyrooh.matrizinsumos.grupo.app.usecase.impl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.mapstruct.factory.Mappers;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
@@ -16,9 +16,9 @@ import com.dannyrooh.matrizinsumos.grupo.domain.repository.GrupoRepository;
 @Service
 public class GrupoUserCaseImpl implements GrupoUseCase {
 
-    GrupoRepository grupoRepository;
+    private final GrupoRepository grupoRepository;
 
-    GrupoMapper grupoMapper;
+    private final GrupoMapper grupoMapper;
 
     public GrupoUserCaseImpl(GrupoRepository grupoRepository) {
         this.grupoRepository = grupoRepository;
@@ -41,9 +41,14 @@ public class GrupoUserCaseImpl implements GrupoUseCase {
 
     @Override
     public Boolean delete(int id) {
-        this.grupoRepository.deleteById(id);
-        Optional<Grupo> deletedGrupo = this.grupoRepository.findById(id);
-        return deletedGrupo.isEmpty();
+        try {
+            this.grupoRepository.deleteById(id);
+            Optional<Grupo> deletedGrupo = this.grupoRepository.findById(id);
+            return deletedGrupo.isEmpty();
+        } catch (EmptyResultDataAccessException e) {
+            return true;
+        }
+
     }
 
     @Override
@@ -56,12 +61,6 @@ public class GrupoUserCaseImpl implements GrupoUseCase {
     public List<GrupoDTO> getAll() {
         List<Grupo> grupos = this.grupoRepository.findAll();
         return grupoMapper.listGrupoToListGrupoDTO(grupos);
-        // List<GrupoDTO> lista = Arrays.asList(
-        // new GrupoDTO(1, "John Doe"),
-        // new GrupoDTO(2, "Mary Crazy"),
-        // new GrupoDTO(3, "Patrick Hungry"),
-        // new GrupoDTO(3, "Petter Malasar"));
-        // return lista;
     }
 
 }

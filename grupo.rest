@@ -22,4 +22,4 @@ content-type: application/json
 }
 
 ###
-DELETE http://localhost:3000/grupo/10003  
+DELETE http://localhost:3000/grupo/1000  
