@@ -1,7 +1,10 @@
 package com.dannyrooh.matrizinsumos.grupo.app.usecase.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import javax.xml.bind.ValidationException;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -10,23 +13,27 @@ import org.springframework.stereotype.Service;
 import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
 import com.dannyrooh.matrizinsumos.grupo.app.mapper.GrupoMapper;
 import com.dannyrooh.matrizinsumos.grupo.app.usecase.GrupoUseCase;
+import com.dannyrooh.matrizinsumos.grupo.app.usecase.validator.GrupoUseCaseValidator;
 import com.dannyrooh.matrizinsumos.grupo.domain.model.Grupo;
 import com.dannyrooh.matrizinsumos.grupo.domain.repository.GrupoRepository;
 
 @Service
-public class GrupoUserCaseImpl implements GrupoUseCase {
+public class GrupoUseCaseImpl implements GrupoUseCase {
 
     private final GrupoRepository grupoRepository;
+    // private final GrupoUseCaseValidator grupoUseCaseValidator;
 
     private final GrupoMapper grupoMapper;
 
-    public GrupoUserCaseImpl(GrupoRepository grupoRepository) {
+    public GrupoUseCaseImpl(GrupoRepository grupoRepository, GrupoUseCaseValidator grupoUseCaseValidator) {
         this.grupoRepository = grupoRepository;
+        // this.grupoUseCaseValidator = grupoUseCaseValidator;
         this.grupoMapper = Mappers.getMapper(GrupoMapper.class);
     }
 
     @Override
     public GrupoDTO insert(GrupoDTO grupoDTO) {
+
         Grupo grupo = grupoMapper.grupoDTOToGrupo(grupoDTO);
         Grupo responde = this.grupoRepository.save(grupo);
         return grupoMapper.grupoToGrupoDTO(responde);

@@ -1,8 +1,19 @@
 package com.dannyrooh.matrizinsumos.grupo.app.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class GrupoDTO {
 
     private int id;
+
+    @NotNull(message = "O campo 'nome' é obrigatório e não pode estar em branco.")
+    @Size(min = 2, message = "O nome do grupo deve ter no mímimo 2 caracteres")
+    @Size(max = 50, message = "O nome do grupo deve ter no máximo 50 caracteres")
+    private String nome;
+
+    public GrupoDTO() {
+    }
 
     public GrupoDTO(int id, String nome) {
         this.id = id;
@@ -18,8 +29,6 @@ public class GrupoDTO {
         setNome(nome);
         return this;
     }
-
-    private String nome;
 
     public int getId() {
         return this.id;

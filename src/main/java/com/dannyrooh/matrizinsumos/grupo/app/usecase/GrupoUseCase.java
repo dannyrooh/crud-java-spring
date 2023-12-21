@@ -2,6 +2,7 @@ package com.dannyrooh.matrizinsumos.grupo.app.usecase;
 
 import java.util.List;
 
+
 import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
 
 public interface GrupoUseCase {

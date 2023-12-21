@@ -13,6 +13,14 @@ content-type: application/json
 }
 
 ###
+POST http://localhost:3000/grupo  HTTP/1.1
+content-type: application/json
+
+{
+    
+}
+
+###
 PUT http://localhost:3000/grupo  HTTP/1.1
 content-type: application/json
 
