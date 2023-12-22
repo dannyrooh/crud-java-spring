@@ -30,4 +30,24 @@ content-type: application/json
 }
 
 ###
+PUT http://localhost:3000/grupo  HTTP/1.1
+content-type: application/json
+
+{
+    "id" : 0,
+    "nome" : "João de Deus"
+}
+
+
+###
+PUT http://localhost:3000/grupo  HTTP/1.1
+content-type: application/json
+
+{
+    "id" : 0,
+    "nome" : ""
+}
+
+
+###
 DELETE http://localhost:3000/grupo/1000  

@@ -4,12 +4,15 @@ import com.dannyrooh.matrizinsumos.grupo.app.controller.GrupoRestController;
 import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
 import com.dannyrooh.matrizinsumos.grupo.app.usecase.GrupoUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +28,7 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(GrupoRestController.class)
+@AutoConfigureMockMvc
 class GrupoRestControllerTest {
 
     @Mock
@@ -40,7 +44,8 @@ class GrupoRestControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void testInsert() throws Exception {
+    @DisplayName("Deve criar um grupo com sucesso")
+    void createGrupoTest() throws Exception {
         GrupoDTO grupoDTO = new GrupoDTO(1, "Test Group");
 
         when(grupoUseCase.insert(any(GrupoDTO.class))).thenReturn(grupoDTO);
@@ -54,7 +59,8 @@ class GrupoRestControllerTest {
     }
 
     @Test
-    void testDelete() throws Exception {
+    @DisplayName("Deve excluir um grupo com sucesso")
+    void deleteGrupoTest() throws Exception {
         int idToDelete = 1;
 
         when(grupoUseCase.delete(anyInt())).thenReturn(true);
@@ -66,7 +72,8 @@ class GrupoRestControllerTest {
     }
 
     @Test
-    void testUpdate() throws Exception {
+    @DisplayName("Deve alterar um grupo com sucesso")
+    void updateGrupoTest() throws Exception {
         GrupoDTO grupoDTOToUpdate = new GrupoDTO(1, "Updated Group");
 
         when(grupoUseCase.update(any(GrupoDTO.class))).thenReturn(grupoDTOToUpdate);

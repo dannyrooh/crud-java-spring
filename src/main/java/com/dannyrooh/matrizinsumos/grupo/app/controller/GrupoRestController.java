@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
@@ -28,13 +30,14 @@ public class GrupoRestController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<GrupoDTO> insert(@Valid @RequestBody GrupoDTO grupo) {
         GrupoDTO grupoDTO = this.grupousecase.insert(grupo);
         return ResponseEntity.ok(grupoDTO);
     }
 
     @PutMapping
-    public ResponseEntity<GrupoDTO> update(@RequestBody GrupoDTO grupo) {
+    public ResponseEntity<GrupoDTO> update(@Valid @RequestBody GrupoDTO grupo) {
         GrupoDTO grupoDTO = this.grupousecase.update(grupo);
         return ResponseEntity.ok(grupoDTO);
     }
