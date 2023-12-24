@@ -1,8 +1,8 @@
 package com.dannyrooh.matrizinsumos.integration.grupo.app;
 
-import com.dannyrooh.matrizinsumos.grupo.app.controller.GrupoRestController;
-import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
-import com.dannyrooh.matrizinsumos.grupo.app.usecase.GrupoUseCase;
+import com.dannyrooh.matrizinsumos.grupo.domain.dto.GrupoDTO;
+import com.dannyrooh.matrizinsumos.grupo.domain.usecase.GrupoUseCase;
+import com.dannyrooh.matrizinsumos.grupo.entrypoint.controller.GrupoRestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.DisplayName;

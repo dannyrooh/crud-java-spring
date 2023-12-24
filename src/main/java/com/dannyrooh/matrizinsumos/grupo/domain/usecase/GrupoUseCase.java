@@ -1,9 +1,8 @@
-package com.dannyrooh.matrizinsumos.grupo.app.usecase;
+package com.dannyrooh.matrizinsumos.grupo.domain.usecase;
 
 import java.util.List;
 
-
-import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
+import com.dannyrooh.matrizinsumos.grupo.domain.dto.GrupoDTO;
 
 public interface GrupoUseCase {
 

@@ -1,4 +1,4 @@
-package com.dannyrooh.matrizinsumos.grupo.app.usecase.impl;
+package com.dannyrooh.matrizinsumos.grupo.domain.usecase.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,13 +6,14 @@ import java.util.Optional;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
-import com.dannyrooh.matrizinsumos.exception.IdNotFoundException;
-import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
-import com.dannyrooh.matrizinsumos.grupo.app.mapper.GrupoMapper;
-import com.dannyrooh.matrizinsumos.grupo.app.usecase.GrupoUseCase;
-import com.dannyrooh.matrizinsumos.grupo.domain.model.Grupo;
-import com.dannyrooh.matrizinsumos.grupo.domain.repository.GrupoRepository;
-import com.dannyrooh.matrizinsumos.util.ValidatorFieldsUtil;
+import com.dannyrooh.matrizinsumos.exception.WithIdNotFoundException;
+import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
+import com.dannyrooh.matrizinsumos.grupo.dataprovider.model.Grupo;
+import com.dannyrooh.matrizinsumos.grupo.dataprovider.repository.GrupoRepository;
+import com.dannyrooh.matrizinsumos.grupo.domain.dto.GrupoDTO;
+import com.dannyrooh.matrizinsumos.grupo.domain.mapper.GrupoMapper;
+import com.dannyrooh.matrizinsumos.grupo.domain.usecase.GrupoUseCase;
+import com.dannyrooh.matrizinsumos.grupo.domain.validate.GrupoUseCaseValidate;
 
 @Service
 public class GrupoUseCaseImpl implements GrupoUseCase {
@@ -28,13 +29,18 @@ public class GrupoUseCaseImpl implements GrupoUseCase {
     private Grupo getGrupo(Integer id) {
         Optional<Grupo> grupo = this.grupoRepository.findById(id);
         if (!grupo.isPresent()) {
-            new IdNotFoundException();
+            new WithIdNotFoundException();
         }
         return grupo.get();
     }
 
     @Override
     public GrupoDTO insert(GrupoDTO grupoDTO) {
+        GrupoUseCaseValidate.validateInsert(grupoDTO);
+
+        if (grupoRepository.existsByNomeIgnoreCase(grupoDTO.getNome())) {
+            throw new WithNameAlreadInformedException();
+        }
 
         Grupo grupo = grupoMapper.grupoDTOToGrupo(grupoDTO);
         Grupo responde = this.grupoRepository.save(grupo);
@@ -44,7 +50,17 @@ public class GrupoUseCaseImpl implements GrupoUseCase {
     @Override
     public GrupoDTO update(GrupoDTO grupoDTO) {
 
-        ValidatorFieldsUtil.validateID(grupoDTO.getId());
+        GrupoUseCaseValidate.validateUpdate(grupoDTO);
+
+        if (!grupoRepository.existsById(grupoDTO.getId())) {
+            throw new WithIdNotFoundException();
+        }
+
+        Integer existingGroupId = grupoRepository.findIdByNomeIgnoreCaseAndIdNot(grupoDTO.getNome(), grupoDTO.getId());
+
+        if (existingGroupId != null) {
+            throw new WithNameAlreadInformedException();
+        }
 
         Grupo grupo = grupoMapper.grupoDTOToGrupo(grupoDTO);
         Grupo responde = this.grupoRepository.save(grupo);

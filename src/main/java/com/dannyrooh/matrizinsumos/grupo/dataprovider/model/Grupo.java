@@ -1,4 +1,4 @@
-package com.dannyrooh.matrizinsumos.grupo.domain.model;
+package com.dannyrooh.matrizinsumos.grupo.dataprovider.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

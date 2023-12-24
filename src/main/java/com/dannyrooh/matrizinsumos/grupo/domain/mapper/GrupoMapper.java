@@ -1,10 +1,10 @@
-package com.dannyrooh.matrizinsumos.grupo.app.mapper;
+package com.dannyrooh.matrizinsumos.grupo.domain.mapper;
 
 import org.mapstruct.Mapper;
 import java.util.List;
 
-import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
-import com.dannyrooh.matrizinsumos.grupo.domain.model.Grupo;
+import com.dannyrooh.matrizinsumos.grupo.dataprovider.model.Grupo;
+import com.dannyrooh.matrizinsumos.grupo.domain.dto.GrupoDTO;
 
 @Mapper(componentModel = "spring")
 public interface GrupoMapper {

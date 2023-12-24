@@ -1,8 +1,6 @@
-package com.dannyrooh.matrizinsumos.grupo.app.controller;
+package com.dannyrooh.matrizinsumos.grupo.entrypoint.controller;
 
 import java.util.List;
-
-import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dannyrooh.matrizinsumos.grupo.app.dto.GrupoDTO;
-import com.dannyrooh.matrizinsumos.grupo.app.usecase.GrupoUseCase;
+import com.dannyrooh.matrizinsumos.grupo.domain.dto.GrupoDTO;
+import com.dannyrooh.matrizinsumos.grupo.domain.usecase.GrupoUseCase;
 
 @RestController
 @RequestMapping("/grupo")
@@ -31,13 +29,13 @@ public class GrupoRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<GrupoDTO> insert(@Valid @RequestBody GrupoDTO grupo) {
+    public ResponseEntity<GrupoDTO> insert(@RequestBody GrupoDTO grupo) {
         GrupoDTO grupoDTO = this.grupousecase.insert(grupo);
         return ResponseEntity.ok(grupoDTO);
     }
 
     @PutMapping
-    public ResponseEntity<GrupoDTO> update(@Valid @RequestBody GrupoDTO grupo) {
+    public ResponseEntity<GrupoDTO> update(@RequestBody GrupoDTO grupo) {
         GrupoDTO grupoDTO = this.grupousecase.update(grupo);
         return ResponseEntity.ok(grupoDTO);
     }
