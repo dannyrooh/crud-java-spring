@@ -26,14 +26,6 @@ public class GrupoUseCaseImpl implements GrupoUseCase {
         this.grupoMapper = Mappers.getMapper(GrupoMapper.class);
     }
 
-    private Grupo getGrupo(Integer id) {
-        Optional<Grupo> grupo = this.grupoRepository.findById(id);
-        if (!grupo.isPresent()) {
-            new WithIdNotFoundException();
-        }
-        return grupo.get();
-    }
-
     @Override
     public GrupoDTO insert(GrupoDTO grupoDTO) {
         GrupoUseCaseValidate.validateInsert(grupoDTO);
@@ -69,7 +61,11 @@ public class GrupoUseCaseImpl implements GrupoUseCase {
 
     @Override
     public Boolean delete(int id) {
-        getGrupo(id);
+        GrupoUseCaseValidate.validateDelete(id);
+
+        if (!grupoRepository.existsById(id)) {
+            throw new WithIdNotFoundException();
+        }
 
         this.grupoRepository.deleteById(id);
         Optional<Grupo> deletedGrupo = this.grupoRepository.findById(id);
@@ -78,7 +74,14 @@ public class GrupoUseCaseImpl implements GrupoUseCase {
 
     @Override
     public GrupoDTO getById(int id) {
-        return grupoMapper.grupoToGrupoDTO(this.getGrupo(id));
+
+        Optional<Grupo> grupo = grupoRepository.findById(id);
+
+        if (!grupo.isPresent()) {
+            throw new WithIdNotFoundException();
+        }
+
+        return grupoMapper.grupoToGrupoDTO(grupo.get());
     }
 
     @Override

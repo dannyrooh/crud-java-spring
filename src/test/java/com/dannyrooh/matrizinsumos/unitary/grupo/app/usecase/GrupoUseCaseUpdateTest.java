@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.dannyrooh.matrizinsumos.exception.WithIdNotFoundException;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
@@ -70,7 +69,7 @@ class GrupoUseCaseUpdateTest {
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id for menor que zero")
+    @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id não existe na base de dados")
     void testUpdateWithIdNotFoundException() throws ValidationException {
 
         GrupoDTO grupo = new GrupoDTO();

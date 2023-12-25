@@ -42,4 +42,15 @@ public class GrupoUseCaseValidate {
         validateName(grupoDTO, 50);
     }
 
+    public static void validateDelete(Integer id) {
+
+        if (id == null)
+            throw new NullPointerException();
+
+        if (id <= 0) {
+            throw new WithIdZeroOrNotInformedException();
+        }
+
+    }
+
 }
