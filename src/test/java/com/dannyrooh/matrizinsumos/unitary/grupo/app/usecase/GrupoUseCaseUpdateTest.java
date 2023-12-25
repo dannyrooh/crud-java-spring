@@ -1,10 +1,9 @@
 package com.dannyrooh.matrizinsumos.unitary.grupo.app.usecase;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
@@ -15,8 +14,10 @@ import com.dannyrooh.matrizinsumos.grupo.dataprovider.model.Grupo;
 import com.dannyrooh.matrizinsumos.grupo.dataprovider.repository.GrupoRepository;
 import com.dannyrooh.matrizinsumos.grupo.domain.dto.GrupoDTO;
 import com.dannyrooh.matrizinsumos.grupo.domain.usecase.impl.GrupoUseCaseImpl;
+import com.dannyrooh.matrizinsumos.grupo.domain.validate.impl.GrupoUseCaseValidateImpl;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import javax.xml.bind.ValidationException;
@@ -27,11 +28,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 class GrupoUseCaseUpdateTest {
 
-    @Mock
     private GrupoRepository grupoRepository;
-
-    @InjectMocks
     private GrupoUseCaseImpl grupoUseCase;
+    private GrupoUseCaseValidateImpl grupoUseCaseValidateImpl;
+
+    @BeforeEach
+    void setUp() {
+        grupoRepository = mock(GrupoRepository.class);
+        grupoUseCaseValidateImpl = new GrupoUseCaseValidateImpl();
+        grupoUseCase = new GrupoUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+    }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco")

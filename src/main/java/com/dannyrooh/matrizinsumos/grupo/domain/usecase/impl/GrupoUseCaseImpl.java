@@ -13,22 +13,25 @@ import com.dannyrooh.matrizinsumos.grupo.dataprovider.repository.GrupoRepository
 import com.dannyrooh.matrizinsumos.grupo.domain.dto.GrupoDTO;
 import com.dannyrooh.matrizinsumos.grupo.domain.mapper.GrupoMapper;
 import com.dannyrooh.matrizinsumos.grupo.domain.usecase.GrupoUseCase;
-import com.dannyrooh.matrizinsumos.grupo.domain.validate.GrupoUseCaseValidate;
+import com.dannyrooh.matrizinsumos.grupo.domain.validate.impl.GrupoUseCaseValidateImpl;
 
 @Service
 public class GrupoUseCaseImpl implements GrupoUseCase {
 
     private final GrupoRepository grupoRepository;
     private final GrupoMapper grupoMapper;
+    private final GrupoUseCaseValidateImpl grupoUseCaseValidate;
 
-    public GrupoUseCaseImpl(GrupoRepository grupoRepository) {
+    public GrupoUseCaseImpl(GrupoRepository grupoRepository,
+            GrupoUseCaseValidateImpl grupoUseCaseValidate) {
         this.grupoRepository = grupoRepository;
         this.grupoMapper = Mappers.getMapper(GrupoMapper.class);
+        this.grupoUseCaseValidate = grupoUseCaseValidate;
     }
 
     @Override
     public GrupoDTO insert(GrupoDTO grupoDTO) {
-        GrupoUseCaseValidate.validateInsert(grupoDTO);
+        grupoUseCaseValidate.validateInsert(grupoDTO);
 
         if (grupoRepository.existsByNomeIgnoreCase(grupoDTO.getNome())) {
             throw new WithNameAlreadInformedException();
@@ -42,7 +45,7 @@ public class GrupoUseCaseImpl implements GrupoUseCase {
     @Override
     public GrupoDTO update(GrupoDTO grupoDTO) {
 
-        GrupoUseCaseValidate.validateUpdate(grupoDTO);
+        grupoUseCaseValidate.validateUpdate(grupoDTO);
 
         if (!grupoRepository.existsById(grupoDTO.getId())) {
             throw new WithIdNotFoundException();
@@ -61,7 +64,7 @@ public class GrupoUseCaseImpl implements GrupoUseCase {
 
     @Override
     public Boolean delete(int id) {
-        GrupoUseCaseValidate.validateDelete(id);
+        grupoUseCaseValidate.validateDelete(id);
 
         if (!grupoRepository.existsById(id)) {
             throw new WithIdNotFoundException();

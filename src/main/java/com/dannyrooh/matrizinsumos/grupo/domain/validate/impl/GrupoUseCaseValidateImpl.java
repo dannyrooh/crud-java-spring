@@ -1,15 +1,18 @@
-package com.dannyrooh.matrizinsumos.grupo.domain.validate;
+package com.dannyrooh.matrizinsumos.grupo.domain.validate.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
 import com.dannyrooh.matrizinsumos.exception.WithNameMaxSizeException;
 import com.dannyrooh.matrizinsumos.grupo.domain.dto.GrupoDTO;
+import com.dannyrooh.matrizinsumos.grupo.domain.validate.GrupoUseCaseValidade;
 
-public class GrupoUseCaseValidate {
+@Component
+public class GrupoUseCaseValidateImpl implements GrupoUseCaseValidade {
 
-    private static void validateName(GrupoDTO grupoDTO, Integer size) {
+    private void validateName(GrupoDTO grupoDTO, Integer size) {
         String name = grupoDTO.getNome();
         if (StringUtils.isBlank(name)) {
             throw new WithNameEmptyException();
@@ -20,7 +23,7 @@ public class GrupoUseCaseValidate {
         }
     }
 
-    public static void validateInsert(GrupoDTO grupoDTO) {
+    public void validateInsert(GrupoDTO grupoDTO) {
 
         if (grupoDTO == null)
             throw new NullPointerException();
@@ -28,7 +31,7 @@ public class GrupoUseCaseValidate {
         validateName(grupoDTO, 50);
     }
 
-    public static void validateUpdate(GrupoDTO grupoDTO) {
+    public void validateUpdate(GrupoDTO grupoDTO) {
 
         if (grupoDTO == null)
             throw new NullPointerException();
@@ -42,7 +45,7 @@ public class GrupoUseCaseValidate {
         validateName(grupoDTO, 50);
     }
 
-    public static void validateDelete(Integer id) {
+    public void validateDelete(Integer id) {
 
         if (id == null)
             throw new NullPointerException();
