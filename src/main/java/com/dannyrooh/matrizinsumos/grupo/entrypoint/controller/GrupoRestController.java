@@ -31,7 +31,7 @@ public class GrupoRestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<GrupoDTO> insert(@RequestBody GrupoDTO grupo) {
         GrupoDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.ok(grupoDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
     }
 
     @PutMapping

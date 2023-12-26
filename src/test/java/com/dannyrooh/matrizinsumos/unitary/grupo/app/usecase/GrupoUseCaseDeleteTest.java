@@ -1,10 +1,9 @@
 package com.dannyrooh.matrizinsumos.unitary.grupo.app.usecase;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.dannyrooh.matrizinsumos.exception.WithIdNotFoundException;
@@ -17,6 +16,7 @@ import com.dannyrooh.matrizinsumos.grupo.domain.validate.impl.GrupoUseCaseValida
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import javax.xml.bind.ValidationException;
@@ -24,14 +24,16 @@ import javax.xml.bind.ValidationException;
 @ExtendWith(MockitoExtension.class)
 class GrupoUseCaseDeleteTest {
 
-    @Mock
     private GrupoRepository grupoRepository;
-
-    @Mock
-    private GrupoUseCaseValidateImpl grupoUseCaseValidate;
-
-    @InjectMocks
     private GrupoUseCaseImpl grupoUseCase;
+    private GrupoUseCaseValidateImpl grupoUseCaseValidateImpl;
+
+    @BeforeEach
+    void setUp() {
+        grupoRepository = mock(GrupoRepository.class);
+        grupoUseCaseValidateImpl = new GrupoUseCaseValidateImpl();
+        grupoUseCase = new GrupoUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+    }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdZeroOrNot'InformedException quando o id for menor que zero")
@@ -53,8 +55,7 @@ class GrupoUseCaseDeleteTest {
     void testDeleted() {
 
         doNothing().when(grupoRepository).deleteById(1);
-        doNothing().when(grupoUseCaseValidate).validateDelete(1); 
-        when(grupoUseCase.delete(1)).thenReturn(true);
+        when(grupoRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
 
         assertDoesNotThrow(
 

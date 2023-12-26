@@ -4,30 +4,26 @@ import com.dannyrooh.matrizinsumos.grupo.domain.dto.GrupoDTO;
 import com.dannyrooh.matrizinsumos.grupo.domain.usecase.GrupoUseCase;
 import com.dannyrooh.matrizinsumos.grupo.entrypoint.controller.GrupoRestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
-@WebMvcTest(GrupoRestController.class)
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
 @AutoConfigureMockMvc
 class GrupoRestControllerTest {
 
@@ -37,15 +33,17 @@ class GrupoRestControllerTest {
     @InjectMocks
     private GrupoRestController grupoRestController;
 
-    @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(grupoRestController).build();
+        objectMapper = new ObjectMapper();        
+    }
+
     @Test
-    @DisplayName("Deve criar um grupo com sucesso")
-    void createGrupoTest() throws Exception {
+    void testInsert() throws Exception {
         GrupoDTO grupoDTO = new GrupoDTO(1, "Test Group");
 
         when(grupoUseCase.insert(any(GrupoDTO.class))).thenReturn(grupoDTO);
@@ -53,27 +51,13 @@ class GrupoRestControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/grupo")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(grupoDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
     }
 
     @Test
-    @DisplayName("Deve excluir um grupo com sucesso")
-    void deleteGrupoTest() throws Exception {
-        int idToDelete = 1;
-
-        when(grupoUseCase.delete(anyInt())).thenReturn(true);
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").value(true));
-    }
-
-    @Test
-    @DisplayName("Deve alterar um grupo com sucesso")
-    void updateGrupoTest() throws Exception {
+    void testUpdate() throws Exception {
         GrupoDTO grupoDTOToUpdate = new GrupoDTO(1, "Updated Group");
 
         when(grupoUseCase.update(any(GrupoDTO.class))).thenReturn(grupoDTOToUpdate);
@@ -87,11 +71,23 @@ class GrupoRestControllerTest {
     }
 
     @Test
+    void testDelete() throws Exception {
+        int idToDelete = 1;
+
+        when(grupoUseCase.delete(eq(idToDelete))).thenReturn(true);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(true));
+    }
+
+    @Test
     void testGetById() throws Exception {
         int idToGet = 1;
         GrupoDTO grupoDTO = new GrupoDTO(idToGet, "Test Group");
 
-        when(grupoUseCase.getById(anyInt())).thenReturn(grupoDTO);
+        when(grupoUseCase.getById(eq(idToGet))).thenReturn(grupoDTO);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/grupo/{id}", idToGet)
                 .contentType(MediaType.APPLICATION_JSON))
