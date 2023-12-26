@@ -74,7 +74,7 @@ class GrupoRestControllerTest {
     void testDelete() throws Exception {
         int idToDelete = 1;
 
-        when(grupoUseCase.delete(eq(idToDelete))).thenReturn(true);
+        when(grupoUseCase.delete(idToDelete)).thenReturn(true);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -87,7 +87,7 @@ class GrupoRestControllerTest {
         int idToGet = 1;
         GrupoDTO grupoDTO = new GrupoDTO(idToGet, "Test Group");
 
-        when(grupoUseCase.getById(eq(idToGet))).thenReturn(grupoDTO);
+        when(grupoUseCase.getById(idToGet)).thenReturn(grupoDTO);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/grupo/{id}", idToGet)
                 .contentType(MediaType.APPLICATION_JSON))

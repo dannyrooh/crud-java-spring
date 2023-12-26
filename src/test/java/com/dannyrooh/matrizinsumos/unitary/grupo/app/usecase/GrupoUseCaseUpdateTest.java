@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,17 +41,11 @@ class GrupoUseCaseUpdateTest {
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco")
+    @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testUpdateWithEmptyNameException() throws ValidationException {
-        assertThrows(WithNameEmptyException.class,
-                () -> grupoUseCase.update(new GrupoDTO(1, "")));
-    }
-
-    @Test
-    @DisplayName("Deve gerar a exception NullPointerException quando o objeto não for informado")
-    void testUpdateWithNULLException() throws ValidationException {
-        assertThrows(NullPointerException.class,
-                () -> grupoUseCase.update(null));
+        assertAll(
+                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(new GrupoDTO(1, ""))),
+                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(null)));
     }
 
     @Test

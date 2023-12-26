@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,31 +41,28 @@ class GrupoUseCaseInsertTest {
         grupoUseCase = new GrupoUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
     }
 
-    @Test
-    @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco")
-    void testInsertWithEmptyNameException() throws ValidationException {
-        assertThrows(WithNameEmptyException.class,
-                () -> grupoUseCase.insert(new GrupoDTO(1, "")));
+    private void insertGrupo(GrupoDTO grupoDTO) {
+        grupoUseCase.insert(grupoDTO);
     }
 
     @Test
-    @DisplayName("Deve gerar a exception NullPointerException quando o objeto não for informado")
-    void testInsertWithNULLException() throws ValidationException {
-
-        assertThrows(NullPointerException.class,
-                () -> grupoUseCase.insert(null));
+    @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
+    void testInsertWithEmptyNameException() throws WithNameEmptyException {
+        assertAll(
+                () -> assertThrows(WithNameEmptyException.class, () -> insertGrupo(new GrupoDTO(1, ""))),
+                () -> assertThrows(WithNameEmptyException.class, () -> insertGrupo(null)));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameMaxSizeException quando o nome for superior a 50 caracteres")
-    void testInsertWithNameMaxCharacterException() throws ValidationException {
-        assertThrows(WithNameMaxSizeException.class,
-                () -> grupoUseCase.insert(new GrupoDTO(0, "a".repeat(51))));
+    void testInsertWithNameMaxCharacterException() throws WithNameMaxSizeException {
+        String longName = "a".repeat(51);
+        assertThrows(WithNameMaxSizeException.class, () -> grupoUseCase.insert(new GrupoDTO(0, longName)));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um grupo como o nome informado")
-    void testInsertWithNameAlreadInformedException() throws ValidationException {
+    void testInsertWithNameAlreadInformedException() throws WithNameAlreadInformedException {
 
         when(grupoRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
         GrupoDTO grupoDTO = new GrupoDTO(0, "TestGroup");
@@ -81,4 +79,5 @@ class GrupoUseCaseInsertTest {
         assertNotNull(result);
 
     }
+
 }

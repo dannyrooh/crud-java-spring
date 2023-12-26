@@ -14,7 +14,7 @@ public class GrupoUseCaseValidateImpl implements GrupoUseCaseValidade {
 
     private void validateName(GrupoDTO grupoDTO, Integer size) {
         String name = grupoDTO.getNome();
-        if (StringUtils.isBlank(name)) {
+        if ((grupoDTO == null) || (StringUtils.isBlank(name))) {
             throw new WithNameEmptyException();
         }
 
@@ -24,10 +24,6 @@ public class GrupoUseCaseValidateImpl implements GrupoUseCaseValidade {
     }
 
     public void validateInsert(GrupoDTO grupoDTO) {
-
-        if (grupoDTO == null)
-            throw new NullPointerException();
-
         validateName(grupoDTO, 50);
     }
 
