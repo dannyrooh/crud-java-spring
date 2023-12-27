@@ -9,7 +9,7 @@ POST http://localhost:3000/grupo  HTTP/1.1
 content-type: application/json
 
 {
-    "nome" : "John Doe"
+    "nome" : "Mary Crazy"
 }
 
 ###
@@ -25,7 +25,7 @@ PUT http://localhost:3000/grupo  HTTP/1.1
 content-type: application/json
 
 {
-    "id" : 10005,
+    "id" : 3,
     "nome" : "João de Deus dos Céus"
 }
 
