@@ -4,18 +4,8 @@ import org.mapstruct.Mapper;
 
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.EpocaAplicacao;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.EpocaAplicacaoDTO;
-
-import java.util.List;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.mapper.AuxiliarMapper;
 
 @Mapper(componentModel = "spring")
-public interface EpocaAplicacaoMapper {
-
-    EpocaAplicacao grupoDTOToEpocaAplicacao(EpocaAplicacaoDTO grupoDto);
-
-    EpocaAplicacaoDTO grupoToEpocaAplicacaoDTO(EpocaAplicacao grupo);
-
-    List<EpocaAplicacao> listEpocaAplicacaoDTOToListEpocaAplicacao(List<EpocaAplicacaoDTO> grupoDTOList);
-
-    List<EpocaAplicacaoDTO> listEpocaAplicacaoToListEpocaAplicacaoDTO(List<EpocaAplicacao> grupoList);
-
+public interface EpocaAplicacaoMapper extends AuxiliarMapper<EpocaAplicacao, EpocaAplicacaoDTO> {
 }

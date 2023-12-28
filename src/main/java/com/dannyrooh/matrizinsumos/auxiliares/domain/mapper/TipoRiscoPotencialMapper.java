@@ -4,18 +4,8 @@ import org.mapstruct.Mapper;
 
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.TipoRiscoPotencial;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoRiscoPotencialDTO;
-
-import java.util.List;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.mapper.AuxiliarMapper;
 
 @Mapper(componentModel = "spring")
-public interface TipoRiscoPotencialMapper {
-
-    TipoRiscoPotencial grupoDTOToTipoRiscoPotencial(TipoRiscoPotencialDTO grupoDto);
-
-    TipoRiscoPotencialDTO grupoToTipoRiscoPotencialDTO(TipoRiscoPotencial grupo);
-
-    List<TipoRiscoPotencial> listTipoRiscoPotencialDTOToListTipoRiscoPotencial(List<TipoRiscoPotencialDTO> grupoDTOList);
-
-    List<TipoRiscoPotencialDTO> listTipoRiscoPotencialToListTipoRiscoPotencialDTO(List<TipoRiscoPotencial> grupoList);
-
+public interface TipoRiscoPotencialMapper extends AuxiliarMapper<TipoRiscoPotencial, TipoRiscoPotencialDTO> {
 }

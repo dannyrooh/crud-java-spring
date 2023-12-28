@@ -11,7 +11,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.ClasseToxicolog
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.ClasseToxicologiaRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.ClasseToxicologiaDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.ClasseToxicologiaUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.ClasseToxicologiaUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
 import com.dannyrooh.matrizinsumos.exception.WithNameMaxSizeException;
@@ -23,59 +22,57 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("teste")
 class ClasseToxicologiaUseCaseInsertTest {
 
-    private ClasseToxicologiaRepository grupoRepository;
-    private ClasseToxicologiaUseCaseImpl grupoUseCase;
-    private ClasseToxicologiaUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private ClasseToxicologiaRepository classeToxicologiaRepository;
+    private ClasseToxicologiaUseCaseImpl classeToxicologiaUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(ClasseToxicologiaRepository.class);
-        grupoUseCaseValidateImpl = new ClasseToxicologiaUseCaseValidateImpl();
-        grupoUseCase = new ClasseToxicologiaUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
-    }
+        classeToxicologiaRepository = mock(ClasseToxicologiaRepository.class);
 
-    private void insertClasseToxicologia(ClasseToxicologiaDTO grupoDTO) {
-        grupoUseCase.insert(grupoDTO);
+        classeToxicologiaUseCase = new ClasseToxicologiaUseCaseImpl(classeToxicologiaRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testInsertWithEmptyNameException() throws WithNameEmptyException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> insertClasseToxicologia(new ClasseToxicologiaDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> insertClasseToxicologia(null)));
+        assertThrows(WithNameEmptyException.class, () -> classeToxicologiaUseCase.insert(new ClasseToxicologiaDTO(1, "")));
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testInsertIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> classeToxicologiaUseCase.insert(null));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameMaxSizeException quando o nome for superior a 50 caracteres")
     void testInsertWithNameMaxCharacterException() throws WithNameMaxSizeException {
         String longName = "a".repeat(51);
-        assertThrows(WithNameMaxSizeException.class, () -> grupoUseCase.insert(new ClasseToxicologiaDTO(0, longName)));
+        assertThrows(WithNameMaxSizeException.class, () -> classeToxicologiaUseCase.insert(new ClasseToxicologiaDTO(0, longName)));
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um grupo como o nome informado")
+    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um classeToxicologia como o nome informado")
     void testInsertWithNameAlreadInformedException() throws WithNameAlreadInformedException {
 
-        when(grupoRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
-        ClasseToxicologiaDTO grupoDTO = new ClasseToxicologiaDTO(0, "TestGroup");
+        when(classeToxicologiaRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
+        ClasseToxicologiaDTO classeToxicologiaDTO = new ClasseToxicologiaDTO(0, "TestGroup");
         assertThrows(WithNameAlreadInformedException.class,
-                () -> grupoUseCase.insert(grupoDTO));
+                () -> classeToxicologiaUseCase.insert(classeToxicologiaDTO));
     }
 
     @Test
     @DisplayName("Deve inserir o objeto no banco de dados e retornar com o código gerado")
     void testInsertWithNonEmptyName() throws ValidationException {
-        ClasseToxicologiaDTO grupoDTO = new ClasseToxicologiaDTO(0, "TestGroup");
-        when(grupoRepository.save(any(ClasseToxicologia.class))).thenReturn(new ClasseToxicologia());
-        ClasseToxicologiaDTO result = grupoUseCase.insert(grupoDTO);
+        ClasseToxicologiaDTO classeToxicologiaDTO = new ClasseToxicologiaDTO(0, "TestGroup");
+        when(classeToxicologiaRepository.save(any(ClasseToxicologia.class))).thenReturn(new ClasseToxicologia());
+        ClasseToxicologiaDTO result = classeToxicologiaUseCase.insert(classeToxicologiaDTO);
         assertNotNull(result);
 
     }

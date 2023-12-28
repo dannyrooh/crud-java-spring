@@ -1,8 +1,8 @@
 package com.dannyrooh.matrizinsumos.integration.auxiliares.app;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.GrupoDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.GrupoUseCase;
 import com.dannyrooh.matrizinsumos.auxiliares.entrypoint.controller.GrupoRestController;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class GrupoRestControllerTest {
 
     @Mock
-    private GrupoUseCase grupoUseCase;
+    private AuxiliarUseCase<GrupoDTO, Integer> grupoUseCase;
 
     @InjectMocks
     private GrupoRestController grupoRestController;
@@ -39,12 +39,12 @@ class GrupoRestControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(grupoRestController).build();
-        objectMapper = new ObjectMapper();        
+        objectMapper = new ObjectMapper();
     }
 
     @Test
     void testInsert() throws Exception {
-        GrupoDTO grupoDTO = new GrupoDTO(1, "Test Group");
+        GrupoDTO grupoDTO = new GrupoDTO(1, "Test Grupo");
 
         when(grupoUseCase.insert(any(GrupoDTO.class))).thenReturn(grupoDTO);
 
@@ -53,12 +53,12 @@ class GrupoRestControllerTest {
                 .content(objectMapper.writeValueAsString(grupoDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Grupo"));
     }
 
     @Test
     void testUpdate() throws Exception {
-        GrupoDTO grupoDTOToUpdate = new GrupoDTO(1, "Updated Group");
+        GrupoDTO grupoDTOToUpdate = new GrupoDTO(1, "Update Grupo");
 
         when(grupoUseCase.update(any(GrupoDTO.class))).thenReturn(grupoDTOToUpdate);
 
@@ -67,7 +67,7 @@ class GrupoRestControllerTest {
                 .content(objectMapper.writeValueAsString(grupoDTOToUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Updated Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Update Grupo"));
     }
 
     @Test
@@ -85,7 +85,7 @@ class GrupoRestControllerTest {
     @Test
     void testGetById() throws Exception {
         int idToGet = 1;
-        GrupoDTO grupoDTO = new GrupoDTO(idToGet, "Test Group");
+        GrupoDTO grupoDTO = new GrupoDTO(idToGet, "Test Grupo");
 
         when(grupoUseCase.getById(idToGet)).thenReturn(grupoDTO);
 
@@ -93,15 +93,15 @@ class GrupoRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToGet))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Grupo"));
     }
 
     @Test
     void testGetAll() throws Exception {
         List<GrupoDTO> grupoDTOList = Arrays.asList(
-                new GrupoDTO(1, "Group 1"),
-                new GrupoDTO(2, "Group 2"),
-                new GrupoDTO(3, "Group 3"));
+                new GrupoDTO(1, "Grupo 1"),
+                new GrupoDTO(2, "Grupo 2"),
+                new GrupoDTO(3, "Grupo 3"));
 
         when(grupoUseCase.getAll()).thenReturn(grupoDTOList);
 
@@ -110,10 +110,10 @@ class GrupoRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(grupoDTOList.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Group 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Grupo 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Group 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Grupo 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Group 3"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Grupo 3"));
     }
 }

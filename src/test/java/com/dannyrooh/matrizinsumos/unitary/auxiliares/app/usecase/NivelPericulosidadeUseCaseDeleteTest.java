@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.NivelPericulosidadeRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.NivelPericulosidadeDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.NivelPericulosidadeUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.NivelPericulosidadeUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithIdNotFoundException;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 
@@ -24,46 +23,42 @@ import javax.xml.bind.ValidationException;
 @ExtendWith(MockitoExtension.class)
 class NivelPericulosidadeUseCaseDeleteTest {
 
-    private NivelPericulosidadeRepository grupoRepository;
-    private NivelPericulosidadeUseCaseImpl grupoUseCase;
-    private NivelPericulosidadeUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private NivelPericulosidadeRepository nivelPericulosidadeRepository;
+    private NivelPericulosidadeUseCaseImpl nivelPericulosidadeUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(NivelPericulosidadeRepository.class);
-        grupoUseCaseValidateImpl = new NivelPericulosidadeUseCaseValidateImpl();
-        grupoUseCase = new NivelPericulosidadeUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+        nivelPericulosidadeRepository = mock(NivelPericulosidadeRepository.class);
+        nivelPericulosidadeUseCase = new NivelPericulosidadeUseCaseImpl(nivelPericulosidadeRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdZeroOrNot'InformedException quando o id for menor que zero")
     void testDeleteIdNotOrZeroInformedException() throws ValidationException {
         assertThrows(WithIdZeroOrNotInformedException.class,
-                () -> grupoUseCase.delete(0));
+                () -> nivelPericulosidadeUseCase.delete(0));
         assertThrows(WithIdZeroOrNotInformedException.class,
-                () -> grupoUseCase.delete(-1));
+                () -> nivelPericulosidadeUseCase.delete(-1));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id não existe na base de dados")
     void testDeleteIdNotFoundException() throws ValidationException {
         assertThrows(WithIdNotFoundException.class,
-                () -> grupoUseCase.delete(1));
+                () -> nivelPericulosidadeUseCase.delete(1));
     }
 
     @Test
-    void testDeleted() {
+    void testDeleted() throws ValidationException {
 
-        doNothing().when(grupoRepository).deleteById(1);
-        when(grupoRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
+        doNothing().when(nivelPericulosidadeRepository).deleteById(1);
+        when(nivelPericulosidadeRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
 
         assertDoesNotThrow(
 
                 () -> {
-                    grupoUseCase.insert(new NivelPericulosidadeDTO(1, "TestGroup First"));
-                    grupoUseCase.delete(1);
+                    nivelPericulosidadeUseCase.insert(new NivelPericulosidadeDTO(1, "TestGroup First"));
+                    nivelPericulosidadeUseCase.delete(1);
                 });
-
     }
-
 }

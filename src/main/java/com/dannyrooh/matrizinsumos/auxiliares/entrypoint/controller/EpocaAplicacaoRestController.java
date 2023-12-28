@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.EpocaAplicacaoDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.EpocaAplicacaoUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/epocaAplicacao")
 public class EpocaAplicacaoRestController {
 
-    private final EpocaAplicacaoUseCase grupousecase;
+    private final AuxiliarUseCase<EpocaAplicacaoDTO, Integer> epocaAplicacaoUseCase;
 
-    public EpocaAplicacaoRestController(EpocaAplicacaoUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public EpocaAplicacaoRestController(AuxiliarUseCase<EpocaAplicacaoDTO, Integer> epocaAplicacaoUseCase) {
+        this.epocaAplicacaoUseCase = epocaAplicacaoUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<EpocaAplicacaoDTO> insert(@RequestBody EpocaAplicacaoDTO grupo) {
-        EpocaAplicacaoDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<EpocaAplicacaoDTO> insert(@RequestBody EpocaAplicacaoDTO epocaAplicacao) {
+        EpocaAplicacaoDTO epocaAplicacaoDTO = epocaAplicacaoUseCase.insert(epocaAplicacao);
+        return ResponseEntity.status(HttpStatus.CREATED).body(epocaAplicacaoDTO);
     }
 
     @PutMapping
-    public ResponseEntity<EpocaAplicacaoDTO> update(@RequestBody EpocaAplicacaoDTO grupo) {
-        EpocaAplicacaoDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<EpocaAplicacaoDTO> update(@RequestBody EpocaAplicacaoDTO epocaAplicacao) {
+        EpocaAplicacaoDTO epocaAplicacaoDTO = epocaAplicacaoUseCase.update(epocaAplicacao);
+        return ResponseEntity.ok(epocaAplicacaoDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = epocaAplicacaoUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EpocaAplicacaoDTO> getById(@PathVariable int id) {
-        EpocaAplicacaoDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        EpocaAplicacaoDTO epocaAplicacao = epocaAplicacaoUseCase.getById(id);
+        return ResponseEntity.ok(epocaAplicacao);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<EpocaAplicacaoDTO>> getAll() {
-        List<EpocaAplicacaoDTO> lista = this.grupousecase.getAll();
+        List<EpocaAplicacaoDTO> lista = epocaAplicacaoUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

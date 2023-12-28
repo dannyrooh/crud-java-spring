@@ -1,16 +1,16 @@
 package com.dannyrooh.matrizinsumos.auxiliares.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.dto.AuxiliarDTO;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-public class InformacaoAdicionalMatrizDTO {
+public class InformacaoAdicionalMatrizDTO extends AuxiliarDTO {
 
-    private int id;
+    public InformacaoAdicionalMatrizDTO(int id, String nome) {
+        super(id, nome);
+    }
 
-    private String nome;
+    @Override
+    public int getNameSize() {
+        return 50;
+    }
 
 }

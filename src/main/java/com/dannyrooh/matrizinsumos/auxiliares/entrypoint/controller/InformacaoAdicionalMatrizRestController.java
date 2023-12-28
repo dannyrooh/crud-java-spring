@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.InformacaoAdicionalMatrizDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.InformacaoAdicionalMatrizUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/informacaoAdicionalMatriz")
 public class InformacaoAdicionalMatrizRestController {
 
-    private final InformacaoAdicionalMatrizUseCase grupousecase;
+    private final AuxiliarUseCase<InformacaoAdicionalMatrizDTO, Integer> informacaoAdicionalMatrizUseCase;
 
-    public InformacaoAdicionalMatrizRestController(InformacaoAdicionalMatrizUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public InformacaoAdicionalMatrizRestController(AuxiliarUseCase<InformacaoAdicionalMatrizDTO, Integer> informacaoAdicionalMatrizUseCase) {
+        this.informacaoAdicionalMatrizUseCase = informacaoAdicionalMatrizUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<InformacaoAdicionalMatrizDTO> insert(@RequestBody InformacaoAdicionalMatrizDTO grupo) {
-        InformacaoAdicionalMatrizDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<InformacaoAdicionalMatrizDTO> insert(@RequestBody InformacaoAdicionalMatrizDTO informacaoAdicionalMatriz) {
+        InformacaoAdicionalMatrizDTO informacaoAdicionalMatrizDTO = informacaoAdicionalMatrizUseCase.insert(informacaoAdicionalMatriz);
+        return ResponseEntity.status(HttpStatus.CREATED).body(informacaoAdicionalMatrizDTO);
     }
 
     @PutMapping
-    public ResponseEntity<InformacaoAdicionalMatrizDTO> update(@RequestBody InformacaoAdicionalMatrizDTO grupo) {
-        InformacaoAdicionalMatrizDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<InformacaoAdicionalMatrizDTO> update(@RequestBody InformacaoAdicionalMatrizDTO informacaoAdicionalMatriz) {
+        InformacaoAdicionalMatrizDTO informacaoAdicionalMatrizDTO = informacaoAdicionalMatrizUseCase.update(informacaoAdicionalMatriz);
+        return ResponseEntity.ok(informacaoAdicionalMatrizDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = informacaoAdicionalMatrizUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<InformacaoAdicionalMatrizDTO> getById(@PathVariable int id) {
-        InformacaoAdicionalMatrizDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        InformacaoAdicionalMatrizDTO informacaoAdicionalMatriz = informacaoAdicionalMatrizUseCase.getById(id);
+        return ResponseEntity.ok(informacaoAdicionalMatriz);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<InformacaoAdicionalMatrizDTO>> getAll() {
-        List<InformacaoAdicionalMatrizDTO> lista = this.grupousecase.getAll();
+        List<InformacaoAdicionalMatrizDTO> lista = informacaoAdicionalMatrizUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

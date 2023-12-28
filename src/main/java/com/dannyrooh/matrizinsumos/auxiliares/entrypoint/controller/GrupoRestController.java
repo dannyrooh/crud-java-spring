@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.GrupoDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.GrupoUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
 @RequestMapping("/grupo")
 public class GrupoRestController {
 
-    private final GrupoUseCase grupousecase;
+    private final AuxiliarUseCase<GrupoDTO, Integer> grupoUseCase;
 
-    public GrupoRestController(GrupoUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public GrupoRestController(AuxiliarUseCase<GrupoDTO, Integer> grupoUseCase) {
+        this.grupoUseCase = grupoUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<GrupoDTO> insert(@RequestBody GrupoDTO grupo) {
-        GrupoDTO grupoDTO = this.grupousecase.insert(grupo);
+        GrupoDTO grupoDTO = grupoUseCase.insert(grupo);
         return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
     }
 
     @PutMapping
     public ResponseEntity<GrupoDTO> update(@RequestBody GrupoDTO grupo) {
-        GrupoDTO grupoDTO = this.grupousecase.update(grupo);
+        GrupoDTO grupoDTO = grupoUseCase.update(grupo);
         return ResponseEntity.ok(grupoDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = grupoUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GrupoDTO> getById(@PathVariable int id) {
-        GrupoDTO grupo = this.grupousecase.getById(id);
+        GrupoDTO grupo = grupoUseCase.getById(id);
         return ResponseEntity.ok(grupo);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<GrupoDTO>> getAll() {
-        List<GrupoDTO> lista = this.grupousecase.getAll();
+        List<GrupoDTO> lista = grupoUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

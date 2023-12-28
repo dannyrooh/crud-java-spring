@@ -1,8 +1,8 @@
 package com.dannyrooh.matrizinsumos.integration.auxiliares.app;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.GeneroDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.GeneroUseCase;
 import com.dannyrooh.matrizinsumos.auxiliares.entrypoint.controller.GeneroRestController;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,55 +28,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class GeneroRestControllerTest {
 
     @Mock
-    private GeneroUseCase grupoUseCase;
+    private AuxiliarUseCase<GeneroDTO, Integer> generoUseCase;
 
     @InjectMocks
-    private GeneroRestController grupoRestController;
+    private GeneroRestController generoRestController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(grupoRestController).build();
-        objectMapper = new ObjectMapper();        
+        mockMvc = MockMvcBuilders.standaloneSetup(generoRestController).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
     void testInsert() throws Exception {
-        GeneroDTO grupoDTO = new GeneroDTO(1, "Test Group");
+        GeneroDTO generoDTO = new GeneroDTO(1, "Test Genero");
 
-        when(grupoUseCase.insert(any(GeneroDTO.class))).thenReturn(grupoDTO);
+        when(generoUseCase.insert(any(GeneroDTO.class))).thenReturn(generoDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.post("/genero")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTO)))
+                .content(objectMapper.writeValueAsString(generoDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Genero"));
     }
 
     @Test
     void testUpdate() throws Exception {
-        GeneroDTO grupoDTOToUpdate = new GeneroDTO(1, "Updated Group");
+        GeneroDTO generoDTOToUpdate = new GeneroDTO(1, "Update Genero");
 
-        when(grupoUseCase.update(any(GeneroDTO.class))).thenReturn(grupoDTOToUpdate);
+        when(generoUseCase.update(any(GeneroDTO.class))).thenReturn(generoDTOToUpdate);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.put("/genero")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTOToUpdate)))
+                .content(objectMapper.writeValueAsString(generoDTOToUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Updated Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Update Genero"));
     }
 
     @Test
     void testDelete() throws Exception {
         int idToDelete = 1;
 
-        when(grupoUseCase.delete(idToDelete)).thenReturn(true);
+        when(generoUseCase.delete(idToDelete)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/genero/{id}", idToDelete)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(true));
@@ -85,35 +85,35 @@ class GeneroRestControllerTest {
     @Test
     void testGetById() throws Exception {
         int idToGet = 1;
-        GeneroDTO grupoDTO = new GeneroDTO(idToGet, "Test Group");
+        GeneroDTO generoDTO = new GeneroDTO(idToGet, "Test Genero");
 
-        when(grupoUseCase.getById(idToGet)).thenReturn(grupoDTO);
+        when(generoUseCase.getById(idToGet)).thenReturn(generoDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/{id}", idToGet)
+        mockMvc.perform(MockMvcRequestBuilders.get("/genero/{id}", idToGet)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToGet))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Genero"));
     }
 
     @Test
     void testGetAll() throws Exception {
-        List<GeneroDTO> grupoDTOList = Arrays.asList(
-                new GeneroDTO(1, "Group 1"),
-                new GeneroDTO(2, "Group 2"),
-                new GeneroDTO(3, "Group 3"));
+        List<GeneroDTO> generoDTOList = Arrays.asList(
+                new GeneroDTO(1, "Genero 1"),
+                new GeneroDTO(2, "Genero 2"),
+                new GeneroDTO(3, "Genero 3"));
 
-        when(grupoUseCase.getAll()).thenReturn(grupoDTOList);
+        when(generoUseCase.getAll()).thenReturn(generoDTOList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/all")
+        mockMvc.perform(MockMvcRequestBuilders.get("/genero/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(grupoDTOList.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(generoDTOList.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Group 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Genero 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Group 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Genero 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Group 3"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Genero 3"));
     }
 }

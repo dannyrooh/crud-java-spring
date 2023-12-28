@@ -1,8 +1,8 @@
 package com.dannyrooh.matrizinsumos.integration.auxiliares.app;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.ClasseToxicologiaDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.ClasseToxicologiaUseCase;
 import com.dannyrooh.matrizinsumos.auxiliares.entrypoint.controller.ClasseToxicologiaRestController;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,55 +28,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ClasseToxicologiaRestControllerTest {
 
     @Mock
-    private ClasseToxicologiaUseCase grupoUseCase;
+    private AuxiliarUseCase<ClasseToxicologiaDTO, Integer> classeToxicologiaUseCase;
 
     @InjectMocks
-    private ClasseToxicologiaRestController grupoRestController;
+    private ClasseToxicologiaRestController classeToxicologiaRestController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(grupoRestController).build();
-        objectMapper = new ObjectMapper();        
+        mockMvc = MockMvcBuilders.standaloneSetup(classeToxicologiaRestController).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
     void testInsert() throws Exception {
-        ClasseToxicologiaDTO grupoDTO = new ClasseToxicologiaDTO(1, "Test Group");
+        ClasseToxicologiaDTO classeToxicologiaDTO = new ClasseToxicologiaDTO(1, "Test ClasseToxicologia");
 
-        when(grupoUseCase.insert(any(ClasseToxicologiaDTO.class))).thenReturn(grupoDTO);
+        when(classeToxicologiaUseCase.insert(any(ClasseToxicologiaDTO.class))).thenReturn(classeToxicologiaDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.post("/classeToxicologia")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTO)))
+                .content(objectMapper.writeValueAsString(classeToxicologiaDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test ClasseToxicologia"));
     }
 
     @Test
     void testUpdate() throws Exception {
-        ClasseToxicologiaDTO grupoDTOToUpdate = new ClasseToxicologiaDTO(1, "Updated Group");
+        ClasseToxicologiaDTO classeToxicologiaDTOToUpdate = new ClasseToxicologiaDTO(1, "Update ClasseToxicologia");
 
-        when(grupoUseCase.update(any(ClasseToxicologiaDTO.class))).thenReturn(grupoDTOToUpdate);
+        when(classeToxicologiaUseCase.update(any(ClasseToxicologiaDTO.class))).thenReturn(classeToxicologiaDTOToUpdate);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.put("/classeToxicologia")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTOToUpdate)))
+                .content(objectMapper.writeValueAsString(classeToxicologiaDTOToUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Updated Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Update ClasseToxicologia"));
     }
 
     @Test
     void testDelete() throws Exception {
         int idToDelete = 1;
 
-        when(grupoUseCase.delete(idToDelete)).thenReturn(true);
+        when(classeToxicologiaUseCase.delete(idToDelete)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/classeToxicologia/{id}", idToDelete)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(true));
@@ -85,35 +85,35 @@ class ClasseToxicologiaRestControllerTest {
     @Test
     void testGetById() throws Exception {
         int idToGet = 1;
-        ClasseToxicologiaDTO grupoDTO = new ClasseToxicologiaDTO(idToGet, "Test Group");
+        ClasseToxicologiaDTO classeToxicologiaDTO = new ClasseToxicologiaDTO(idToGet, "Test ClasseToxicologia");
 
-        when(grupoUseCase.getById(idToGet)).thenReturn(grupoDTO);
+        when(classeToxicologiaUseCase.getById(idToGet)).thenReturn(classeToxicologiaDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/{id}", idToGet)
+        mockMvc.perform(MockMvcRequestBuilders.get("/classeToxicologia/{id}", idToGet)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToGet))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test ClasseToxicologia"));
     }
 
     @Test
     void testGetAll() throws Exception {
-        List<ClasseToxicologiaDTO> grupoDTOList = Arrays.asList(
-                new ClasseToxicologiaDTO(1, "Group 1"),
-                new ClasseToxicologiaDTO(2, "Group 2"),
-                new ClasseToxicologiaDTO(3, "Group 3"));
+        List<ClasseToxicologiaDTO> classeToxicologiaDTOList = Arrays.asList(
+                new ClasseToxicologiaDTO(1, "ClasseToxicologia 1"),
+                new ClasseToxicologiaDTO(2, "ClasseToxicologia 2"),
+                new ClasseToxicologiaDTO(3, "ClasseToxicologia 3"));
 
-        when(grupoUseCase.getAll()).thenReturn(grupoDTOList);
+        when(classeToxicologiaUseCase.getAll()).thenReturn(classeToxicologiaDTOList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/all")
+        mockMvc.perform(MockMvcRequestBuilders.get("/classeToxicologia/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(grupoDTOList.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(classeToxicologiaDTOList.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Group 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("ClasseToxicologia 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Group 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("ClasseToxicologia 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Group 3"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("ClasseToxicologia 3"));
     }
 }

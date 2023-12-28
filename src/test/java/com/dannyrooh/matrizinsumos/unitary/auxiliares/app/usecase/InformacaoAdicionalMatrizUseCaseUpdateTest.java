@@ -10,7 +10,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.InformacaoAdici
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.InformacaoAdicionalMatrizRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.InformacaoAdicionalMatrizDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.InformacaoAdicionalMatrizUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.InformacaoAdicionalMatrizUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
@@ -23,49 +22,50 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class InformacaoAdicionalMatrizUseCaseUpdateTest {
 
-    private InformacaoAdicionalMatrizRepository grupoRepository;
-    private InformacaoAdicionalMatrizUseCaseImpl grupoUseCase;
-    private InformacaoAdicionalMatrizUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private InformacaoAdicionalMatrizRepository informacaoAdicionalMatrizRepository;
+    private InformacaoAdicionalMatrizUseCaseImpl informacaoAdicionalMatrizUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(InformacaoAdicionalMatrizRepository.class);
-        grupoUseCaseValidateImpl = new InformacaoAdicionalMatrizUseCaseValidateImpl();
-        grupoUseCase = new InformacaoAdicionalMatrizUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+        informacaoAdicionalMatrizRepository = mock(InformacaoAdicionalMatrizRepository.class);
+
+        informacaoAdicionalMatrizUseCase = new InformacaoAdicionalMatrizUseCaseImpl(informacaoAdicionalMatrizRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testUpdateWithEmptyNameException() throws ValidationException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(new InformacaoAdicionalMatrizDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(null)));
+        assertThrows(WithNameEmptyException.class, () -> informacaoAdicionalMatrizUseCase.update(new InformacaoAdicionalMatrizDTO(1, "")));
+
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testUpdateIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> informacaoAdicionalMatrizUseCase.update(null));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameMaxSizeException quando o nome for superior a 50 caracteres")
     void testUpdateWithNameMaxCharacterException() throws ValidationException {
         assertThrows(WithNameMaxSizeException.class,
-                () -> grupoUseCase.update(new InformacaoAdicionalMatrizDTO(1, "a".repeat(51))));
+                () -> informacaoAdicionalMatrizUseCase.update(new InformacaoAdicionalMatrizDTO(1, "a".repeat(51))));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdZeroOrNotInformedException quando o id for menor que zero")
     void testUpdateWithIdZeroOrNotInformedException() throws ValidationException {
 
-        InformacaoAdicionalMatrizDTO grupo = new InformacaoAdicionalMatrizDTO();
-        grupo.setNome("WithIdZeroOrNotInformedException");
-        grupo.setId(0);
+        InformacaoAdicionalMatrizDTO informacaoAdicionalMatriz = new InformacaoAdicionalMatrizDTO(0, "WithIdZeroOrNotInformedException");
 
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
-        grupo.setId(-1);
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> informacaoAdicionalMatrizUseCase.update(informacaoAdicionalMatriz));
+        informacaoAdicionalMatriz.setId(-1);
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> informacaoAdicionalMatrizUseCase.update(informacaoAdicionalMatriz));
 
     }
 
@@ -73,35 +73,33 @@ class InformacaoAdicionalMatrizUseCaseUpdateTest {
     @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id não existe na base de dados")
     void testUpdateWithIdNotFoundException() throws ValidationException {
 
-        InformacaoAdicionalMatrizDTO grupo = new InformacaoAdicionalMatrizDTO();
-        grupo.setNome("WithIdZeroOrNotInformedException");
-        grupo.setId(0);
+        InformacaoAdicionalMatrizDTO informacaoAdicionalMatriz = new InformacaoAdicionalMatrizDTO(0, "WithIdZeroOrNotInformedException");
 
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
-        grupo.setId(-1);
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> informacaoAdicionalMatrizUseCase.update(informacaoAdicionalMatriz));
+        informacaoAdicionalMatriz.setId(-1);
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> informacaoAdicionalMatrizUseCase.update(informacaoAdicionalMatriz));
 
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um grupo como o nome informado")
+    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um informacaoAdicionalMatriz como o nome informado")
     void testUpdateWithNameAlreadInformedException() throws ValidationException {
 
-        when(grupoRepository.save(any(InformacaoAdicionalMatriz.class))).thenThrow(WithNameAlreadInformedException.class);
+        when(informacaoAdicionalMatrizRepository.save(any(InformacaoAdicionalMatriz.class))).thenThrow(WithNameAlreadInformedException.class);
         assertThrows(WithNameAlreadInformedException.class,
                 () -> {
-                    grupoUseCase.insert(new InformacaoAdicionalMatrizDTO(1, "TestGroup First"));
-                    grupoUseCase.insert(new InformacaoAdicionalMatrizDTO(2, "TestGroup Seconde"));
-                    grupoUseCase.update(new InformacaoAdicionalMatrizDTO(1, "TestGroup Second"));
+                    informacaoAdicionalMatrizUseCase.insert(new InformacaoAdicionalMatrizDTO(1, "TestGroup First"));
+                    informacaoAdicionalMatrizUseCase.insert(new InformacaoAdicionalMatrizDTO(2, "TestGroup Seconde"));
+                    informacaoAdicionalMatrizUseCase.update(new InformacaoAdicionalMatrizDTO(1, "TestGroup Second"));
                 });
     }
 
     @Test
     @DisplayName("Deve inserir o objeto no banco de dados e retornar com o código gerado")
     void testUpdateWithNonEmptyName() throws ValidationException {
-        InformacaoAdicionalMatrizDTO grupoDTO = new InformacaoAdicionalMatrizDTO(0, "testUpdateWithNonEmptyName");
-        when(grupoRepository.save(any(InformacaoAdicionalMatriz.class))).thenReturn(new InformacaoAdicionalMatriz());
-        assertNotNull(grupoUseCase.insert(grupoDTO));
+        InformacaoAdicionalMatrizDTO informacaoAdicionalMatrizDTO = new InformacaoAdicionalMatrizDTO(0, "testUpdateWithNonEmptyName");
+        when(informacaoAdicionalMatrizRepository.save(any(InformacaoAdicionalMatriz.class))).thenReturn(new InformacaoAdicionalMatriz());
+        assertNotNull(informacaoAdicionalMatrizUseCase.insert(informacaoAdicionalMatrizDTO));
 
     }
 }

@@ -4,18 +4,8 @@ import org.mapstruct.Mapper;
 
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.TipoInfluenciaSolo;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoInfluenciaSoloDTO;
-
-import java.util.List;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.mapper.AuxiliarMapper;
 
 @Mapper(componentModel = "spring")
-public interface TipoInfluenciaSoloMapper {
-
-    TipoInfluenciaSolo grupoDTOToTipoInfluenciaSolo(TipoInfluenciaSoloDTO grupoDto);
-
-    TipoInfluenciaSoloDTO grupoToTipoInfluenciaSoloDTO(TipoInfluenciaSolo grupo);
-
-    List<TipoInfluenciaSolo> listTipoInfluenciaSoloDTOToListTipoInfluenciaSolo(List<TipoInfluenciaSoloDTO> grupoDTOList);
-
-    List<TipoInfluenciaSoloDTO> listTipoInfluenciaSoloToListTipoInfluenciaSoloDTO(List<TipoInfluenciaSolo> grupoList);
-
+public interface TipoInfluenciaSoloMapper extends AuxiliarMapper<TipoInfluenciaSolo, TipoInfluenciaSoloDTO> {
 }

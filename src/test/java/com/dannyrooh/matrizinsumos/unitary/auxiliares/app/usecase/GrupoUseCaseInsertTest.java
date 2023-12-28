@@ -11,7 +11,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.Grupo;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.GrupoRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.GrupoDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.GrupoUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.GrupoUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
 import com.dannyrooh.matrizinsumos.exception.WithNameMaxSizeException;
@@ -23,7 +22,6 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,25 +30,24 @@ class GrupoUseCaseInsertTest {
 
     private GrupoRepository grupoRepository;
     private GrupoUseCaseImpl grupoUseCase;
-    private GrupoUseCaseValidateImpl grupoUseCaseValidateImpl;
 
     @BeforeEach
     void setUp() {
         grupoRepository = mock(GrupoRepository.class);
-        grupoUseCaseValidateImpl = new GrupoUseCaseValidateImpl();
-        grupoUseCase = new GrupoUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
-    }
 
-    private void insertGrupo(GrupoDTO grupoDTO) {
-        grupoUseCase.insert(grupoDTO);
+        grupoUseCase = new GrupoUseCaseImpl(grupoRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testInsertWithEmptyNameException() throws WithNameEmptyException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> insertGrupo(new GrupoDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> insertGrupo(null)));
+        assertThrows(WithNameEmptyException.class, () -> grupoUseCase.insert(new GrupoDTO(1, "")));
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testInsertIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> grupoUseCase.insert(null));
     }
 
     @Test

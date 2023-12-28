@@ -10,7 +10,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.Grupo;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.GrupoRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.GrupoDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.GrupoUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.GrupoUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
@@ -23,7 +22,6 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,21 +29,25 @@ class GrupoUseCaseUpdateTest {
 
     private GrupoRepository grupoRepository;
     private GrupoUseCaseImpl grupoUseCase;
-    private GrupoUseCaseValidateImpl grupoUseCaseValidateImpl;
 
     @BeforeEach
     void setUp() {
         grupoRepository = mock(GrupoRepository.class);
-        grupoUseCaseValidateImpl = new GrupoUseCaseValidateImpl();
-        grupoUseCase = new GrupoUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+
+        grupoUseCase = new GrupoUseCaseImpl(grupoRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testUpdateWithEmptyNameException() throws ValidationException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(new GrupoDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(null)));
+        assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(new GrupoDTO(1, "")));
+
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testUpdateIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> grupoUseCase.update(null));
     }
 
     @Test
@@ -59,9 +61,7 @@ class GrupoUseCaseUpdateTest {
     @DisplayName("Deve gerar a exception WithIdZeroOrNotInformedException quando o id for menor que zero")
     void testUpdateWithIdZeroOrNotInformedException() throws ValidationException {
 
-        GrupoDTO grupo = new GrupoDTO();
-        grupo.setNome("WithIdZeroOrNotInformedException");
-        grupo.setId(0);
+        GrupoDTO grupo = new GrupoDTO(0, "WithIdZeroOrNotInformedException");
 
         assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
         grupo.setId(-1);
@@ -73,9 +73,7 @@ class GrupoUseCaseUpdateTest {
     @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id não existe na base de dados")
     void testUpdateWithIdNotFoundException() throws ValidationException {
 
-        GrupoDTO grupo = new GrupoDTO();
-        grupo.setNome("WithIdZeroOrNotInformedException");
-        grupo.setId(0);
+        GrupoDTO grupo = new GrupoDTO(0, "WithIdZeroOrNotInformedException");
 
         assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
         grupo.setId(-1);

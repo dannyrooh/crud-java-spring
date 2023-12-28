@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.GeneroDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.GeneroUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/genero")
 public class GeneroRestController {
 
-    private final GeneroUseCase grupousecase;
+    private final AuxiliarUseCase<GeneroDTO, Integer> generoUseCase;
 
-    public GeneroRestController(GeneroUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public GeneroRestController(AuxiliarUseCase<GeneroDTO, Integer> generoUseCase) {
+        this.generoUseCase = generoUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<GeneroDTO> insert(@RequestBody GeneroDTO grupo) {
-        GeneroDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<GeneroDTO> insert(@RequestBody GeneroDTO genero) {
+        GeneroDTO generoDTO = generoUseCase.insert(genero);
+        return ResponseEntity.status(HttpStatus.CREATED).body(generoDTO);
     }
 
     @PutMapping
-    public ResponseEntity<GeneroDTO> update(@RequestBody GeneroDTO grupo) {
-        GeneroDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<GeneroDTO> update(@RequestBody GeneroDTO genero) {
+        GeneroDTO generoDTO = generoUseCase.update(genero);
+        return ResponseEntity.ok(generoDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = generoUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GeneroDTO> getById(@PathVariable int id) {
-        GeneroDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        GeneroDTO genero = generoUseCase.getById(id);
+        return ResponseEntity.ok(genero);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<GeneroDTO>> getAll() {
-        List<GeneroDTO> lista = this.grupousecase.getAll();
+        List<GeneroDTO> lista = generoUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

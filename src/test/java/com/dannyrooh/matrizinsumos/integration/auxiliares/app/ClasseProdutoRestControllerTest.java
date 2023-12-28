@@ -1,8 +1,8 @@
 package com.dannyrooh.matrizinsumos.integration.auxiliares.app;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.ClasseProdutoDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.ClasseProdutoUseCase;
 import com.dannyrooh.matrizinsumos.auxiliares.entrypoint.controller.ClasseProdutoRestController;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,55 +28,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ClasseProdutoRestControllerTest {
 
     @Mock
-    private ClasseProdutoUseCase grupoUseCase;
+    private AuxiliarUseCase<ClasseProdutoDTO, Integer> classeProdutoUseCase;
 
     @InjectMocks
-    private ClasseProdutoRestController grupoRestController;
+    private ClasseProdutoRestController classeProdutoRestController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(grupoRestController).build();
-        objectMapper = new ObjectMapper();        
+        mockMvc = MockMvcBuilders.standaloneSetup(classeProdutoRestController).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
     void testInsert() throws Exception {
-        ClasseProdutoDTO grupoDTO = new ClasseProdutoDTO(1, "Test Group");
+        ClasseProdutoDTO classeProdutoDTO = new ClasseProdutoDTO(1, "Test ClasseProduto");
 
-        when(grupoUseCase.insert(any(ClasseProdutoDTO.class))).thenReturn(grupoDTO);
+        when(classeProdutoUseCase.insert(any(ClasseProdutoDTO.class))).thenReturn(classeProdutoDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.post("/classeProduto")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTO)))
+                .content(objectMapper.writeValueAsString(classeProdutoDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test ClasseProduto"));
     }
 
     @Test
     void testUpdate() throws Exception {
-        ClasseProdutoDTO grupoDTOToUpdate = new ClasseProdutoDTO(1, "Updated Group");
+        ClasseProdutoDTO classeProdutoDTOToUpdate = new ClasseProdutoDTO(1, "Update ClasseProduto");
 
-        when(grupoUseCase.update(any(ClasseProdutoDTO.class))).thenReturn(grupoDTOToUpdate);
+        when(classeProdutoUseCase.update(any(ClasseProdutoDTO.class))).thenReturn(classeProdutoDTOToUpdate);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.put("/classeProduto")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTOToUpdate)))
+                .content(objectMapper.writeValueAsString(classeProdutoDTOToUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Updated Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Update ClasseProduto"));
     }
 
     @Test
     void testDelete() throws Exception {
         int idToDelete = 1;
 
-        when(grupoUseCase.delete(idToDelete)).thenReturn(true);
+        when(classeProdutoUseCase.delete(idToDelete)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/classeProduto/{id}", idToDelete)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(true));
@@ -85,35 +85,35 @@ class ClasseProdutoRestControllerTest {
     @Test
     void testGetById() throws Exception {
         int idToGet = 1;
-        ClasseProdutoDTO grupoDTO = new ClasseProdutoDTO(idToGet, "Test Group");
+        ClasseProdutoDTO classeProdutoDTO = new ClasseProdutoDTO(idToGet, "Test ClasseProduto");
 
-        when(grupoUseCase.getById(idToGet)).thenReturn(grupoDTO);
+        when(classeProdutoUseCase.getById(idToGet)).thenReturn(classeProdutoDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/{id}", idToGet)
+        mockMvc.perform(MockMvcRequestBuilders.get("/classeProduto/{id}", idToGet)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToGet))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test ClasseProduto"));
     }
 
     @Test
     void testGetAll() throws Exception {
-        List<ClasseProdutoDTO> grupoDTOList = Arrays.asList(
-                new ClasseProdutoDTO(1, "Group 1"),
-                new ClasseProdutoDTO(2, "Group 2"),
-                new ClasseProdutoDTO(3, "Group 3"));
+        List<ClasseProdutoDTO> classeProdutoDTOList = Arrays.asList(
+                new ClasseProdutoDTO(1, "ClasseProduto 1"),
+                new ClasseProdutoDTO(2, "ClasseProduto 2"),
+                new ClasseProdutoDTO(3, "ClasseProduto 3"));
 
-        when(grupoUseCase.getAll()).thenReturn(grupoDTOList);
+        when(classeProdutoUseCase.getAll()).thenReturn(classeProdutoDTOList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/all")
+        mockMvc.perform(MockMvcRequestBuilders.get("/classeProduto/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(grupoDTOList.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(classeProdutoDTOList.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Group 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("ClasseProduto 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Group 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("ClasseProduto 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Group 3"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("ClasseProduto 3"));
     }
 }

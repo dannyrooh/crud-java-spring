@@ -10,7 +10,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.Genero;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.GeneroRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.GeneroDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.GeneroUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.GeneroUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
@@ -23,49 +22,50 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class GeneroUseCaseUpdateTest {
 
-    private GeneroRepository grupoRepository;
-    private GeneroUseCaseImpl grupoUseCase;
-    private GeneroUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private GeneroRepository generoRepository;
+    private GeneroUseCaseImpl generoUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(GeneroRepository.class);
-        grupoUseCaseValidateImpl = new GeneroUseCaseValidateImpl();
-        grupoUseCase = new GeneroUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+        generoRepository = mock(GeneroRepository.class);
+
+        generoUseCase = new GeneroUseCaseImpl(generoRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testUpdateWithEmptyNameException() throws ValidationException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(new GeneroDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(null)));
+        assertThrows(WithNameEmptyException.class, () -> generoUseCase.update(new GeneroDTO(1, "")));
+
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testUpdateIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> generoUseCase.update(null));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameMaxSizeException quando o nome for superior a 50 caracteres")
     void testUpdateWithNameMaxCharacterException() throws ValidationException {
         assertThrows(WithNameMaxSizeException.class,
-                () -> grupoUseCase.update(new GeneroDTO(1, "a".repeat(51))));
+                () -> generoUseCase.update(new GeneroDTO(1, "a".repeat(51))));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdZeroOrNotInformedException quando o id for menor que zero")
     void testUpdateWithIdZeroOrNotInformedException() throws ValidationException {
 
-        GeneroDTO grupo = new GeneroDTO();
-        grupo.setNome("WithIdZeroOrNotInformedException");
-        grupo.setId(0);
+        GeneroDTO genero = new GeneroDTO(0, "WithIdZeroOrNotInformedException");
 
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
-        grupo.setId(-1);
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> generoUseCase.update(genero));
+        genero.setId(-1);
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> generoUseCase.update(genero));
 
     }
 
@@ -73,35 +73,33 @@ class GeneroUseCaseUpdateTest {
     @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id não existe na base de dados")
     void testUpdateWithIdNotFoundException() throws ValidationException {
 
-        GeneroDTO grupo = new GeneroDTO();
-        grupo.setNome("WithIdZeroOrNotInformedException");
-        grupo.setId(0);
+        GeneroDTO genero = new GeneroDTO(0, "WithIdZeroOrNotInformedException");
 
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
-        grupo.setId(-1);
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> generoUseCase.update(genero));
+        genero.setId(-1);
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> generoUseCase.update(genero));
 
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um grupo como o nome informado")
+    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um genero como o nome informado")
     void testUpdateWithNameAlreadInformedException() throws ValidationException {
 
-        when(grupoRepository.save(any(Genero.class))).thenThrow(WithNameAlreadInformedException.class);
+        when(generoRepository.save(any(Genero.class))).thenThrow(WithNameAlreadInformedException.class);
         assertThrows(WithNameAlreadInformedException.class,
                 () -> {
-                    grupoUseCase.insert(new GeneroDTO(1, "TestGroup First"));
-                    grupoUseCase.insert(new GeneroDTO(2, "TestGroup Seconde"));
-                    grupoUseCase.update(new GeneroDTO(1, "TestGroup Second"));
+                    generoUseCase.insert(new GeneroDTO(1, "TestGroup First"));
+                    generoUseCase.insert(new GeneroDTO(2, "TestGroup Seconde"));
+                    generoUseCase.update(new GeneroDTO(1, "TestGroup Second"));
                 });
     }
 
     @Test
     @DisplayName("Deve inserir o objeto no banco de dados e retornar com o código gerado")
     void testUpdateWithNonEmptyName() throws ValidationException {
-        GeneroDTO grupoDTO = new GeneroDTO(0, "testUpdateWithNonEmptyName");
-        when(grupoRepository.save(any(Genero.class))).thenReturn(new Genero());
-        assertNotNull(grupoUseCase.insert(grupoDTO));
+        GeneroDTO generoDTO = new GeneroDTO(0, "testUpdateWithNonEmptyName");
+        when(generoRepository.save(any(Genero.class))).thenReturn(new Genero());
+        assertNotNull(generoUseCase.insert(generoDTO));
 
     }
 }

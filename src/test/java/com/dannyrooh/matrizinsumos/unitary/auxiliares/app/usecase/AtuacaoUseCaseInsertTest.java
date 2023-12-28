@@ -11,7 +11,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.Atuacao;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.AtuacaoRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.AtuacaoDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.AtuacaoUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.AtuacaoUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
 import com.dannyrooh.matrizinsumos.exception.WithNameMaxSizeException;
@@ -23,59 +22,57 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("teste")
 class AtuacaoUseCaseInsertTest {
 
-    private AtuacaoRepository grupoRepository;
-    private AtuacaoUseCaseImpl grupoUseCase;
-    private AtuacaoUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private AtuacaoRepository atuacaoRepository;
+    private AtuacaoUseCaseImpl atuacaoUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(AtuacaoRepository.class);
-        grupoUseCaseValidateImpl = new AtuacaoUseCaseValidateImpl();
-        grupoUseCase = new AtuacaoUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
-    }
+        atuacaoRepository = mock(AtuacaoRepository.class);
 
-    private void insertAtuacao(AtuacaoDTO grupoDTO) {
-        grupoUseCase.insert(grupoDTO);
+        atuacaoUseCase = new AtuacaoUseCaseImpl(atuacaoRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testInsertWithEmptyNameException() throws WithNameEmptyException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> insertAtuacao(new AtuacaoDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> insertAtuacao(null)));
+        assertThrows(WithNameEmptyException.class, () -> atuacaoUseCase.insert(new AtuacaoDTO(1, "")));
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testInsertIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> atuacaoUseCase.insert(null));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameMaxSizeException quando o nome for superior a 50 caracteres")
     void testInsertWithNameMaxCharacterException() throws WithNameMaxSizeException {
         String longName = "a".repeat(51);
-        assertThrows(WithNameMaxSizeException.class, () -> grupoUseCase.insert(new AtuacaoDTO(0, longName)));
+        assertThrows(WithNameMaxSizeException.class, () -> atuacaoUseCase.insert(new AtuacaoDTO(0, longName)));
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um grupo como o nome informado")
+    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um atuacao como o nome informado")
     void testInsertWithNameAlreadInformedException() throws WithNameAlreadInformedException {
 
-        when(grupoRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
-        AtuacaoDTO grupoDTO = new AtuacaoDTO(0, "TestGroup");
+        when(atuacaoRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
+        AtuacaoDTO atuacaoDTO = new AtuacaoDTO(0, "TestGroup");
         assertThrows(WithNameAlreadInformedException.class,
-                () -> grupoUseCase.insert(grupoDTO));
+                () -> atuacaoUseCase.insert(atuacaoDTO));
     }
 
     @Test
     @DisplayName("Deve inserir o objeto no banco de dados e retornar com o código gerado")
     void testInsertWithNonEmptyName() throws ValidationException {
-        AtuacaoDTO grupoDTO = new AtuacaoDTO(0, "TestGroup");
-        when(grupoRepository.save(any(Atuacao.class))).thenReturn(new Atuacao());
-        AtuacaoDTO result = grupoUseCase.insert(grupoDTO);
+        AtuacaoDTO atuacaoDTO = new AtuacaoDTO(0, "TestGroup");
+        when(atuacaoRepository.save(any(Atuacao.class))).thenReturn(new Atuacao());
+        AtuacaoDTO result = atuacaoUseCase.insert(atuacaoDTO);
         assertNotNull(result);
 
     }

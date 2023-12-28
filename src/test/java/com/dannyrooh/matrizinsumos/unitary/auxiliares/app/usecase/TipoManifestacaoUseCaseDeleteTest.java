@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.TipoManifestacaoRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoManifestacaoDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.TipoManifestacaoUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.TipoManifestacaoUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithIdNotFoundException;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 
@@ -24,46 +23,42 @@ import javax.xml.bind.ValidationException;
 @ExtendWith(MockitoExtension.class)
 class TipoManifestacaoUseCaseDeleteTest {
 
-    private TipoManifestacaoRepository grupoRepository;
-    private TipoManifestacaoUseCaseImpl grupoUseCase;
-    private TipoManifestacaoUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private TipoManifestacaoRepository tipoManifestacaoRepository;
+    private TipoManifestacaoUseCaseImpl tipoManifestacaoUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(TipoManifestacaoRepository.class);
-        grupoUseCaseValidateImpl = new TipoManifestacaoUseCaseValidateImpl();
-        grupoUseCase = new TipoManifestacaoUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+        tipoManifestacaoRepository = mock(TipoManifestacaoRepository.class);
+        tipoManifestacaoUseCase = new TipoManifestacaoUseCaseImpl(tipoManifestacaoRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdZeroOrNot'InformedException quando o id for menor que zero")
     void testDeleteIdNotOrZeroInformedException() throws ValidationException {
         assertThrows(WithIdZeroOrNotInformedException.class,
-                () -> grupoUseCase.delete(0));
+                () -> tipoManifestacaoUseCase.delete(0));
         assertThrows(WithIdZeroOrNotInformedException.class,
-                () -> grupoUseCase.delete(-1));
+                () -> tipoManifestacaoUseCase.delete(-1));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id não existe na base de dados")
     void testDeleteIdNotFoundException() throws ValidationException {
         assertThrows(WithIdNotFoundException.class,
-                () -> grupoUseCase.delete(1));
+                () -> tipoManifestacaoUseCase.delete(1));
     }
 
     @Test
-    void testDeleted() {
+    void testDeleted() throws ValidationException {
 
-        doNothing().when(grupoRepository).deleteById(1);
-        when(grupoRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
+        doNothing().when(tipoManifestacaoRepository).deleteById(1);
+        when(tipoManifestacaoRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
 
         assertDoesNotThrow(
 
                 () -> {
-                    grupoUseCase.insert(new TipoManifestacaoDTO(1, "TestGroup First"));
-                    grupoUseCase.delete(1);
+                    tipoManifestacaoUseCase.insert(new TipoManifestacaoDTO(1, "TestGroup First"));
+                    tipoManifestacaoUseCase.delete(1);
                 });
-
     }
-
 }

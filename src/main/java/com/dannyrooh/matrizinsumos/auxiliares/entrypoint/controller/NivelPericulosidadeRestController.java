@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.NivelPericulosidadeDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.NivelPericulosidadeUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/nivelPericulosidade")
 public class NivelPericulosidadeRestController {
 
-    private final NivelPericulosidadeUseCase grupousecase;
+    private final AuxiliarUseCase<NivelPericulosidadeDTO, Integer> nivelPericulosidadeUseCase;
 
-    public NivelPericulosidadeRestController(NivelPericulosidadeUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public NivelPericulosidadeRestController(AuxiliarUseCase<NivelPericulosidadeDTO, Integer> nivelPericulosidadeUseCase) {
+        this.nivelPericulosidadeUseCase = nivelPericulosidadeUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<NivelPericulosidadeDTO> insert(@RequestBody NivelPericulosidadeDTO grupo) {
-        NivelPericulosidadeDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<NivelPericulosidadeDTO> insert(@RequestBody NivelPericulosidadeDTO nivelPericulosidade) {
+        NivelPericulosidadeDTO nivelPericulosidadeDTO = nivelPericulosidadeUseCase.insert(nivelPericulosidade);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nivelPericulosidadeDTO);
     }
 
     @PutMapping
-    public ResponseEntity<NivelPericulosidadeDTO> update(@RequestBody NivelPericulosidadeDTO grupo) {
-        NivelPericulosidadeDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<NivelPericulosidadeDTO> update(@RequestBody NivelPericulosidadeDTO nivelPericulosidade) {
+        NivelPericulosidadeDTO nivelPericulosidadeDTO = nivelPericulosidadeUseCase.update(nivelPericulosidade);
+        return ResponseEntity.ok(nivelPericulosidadeDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = nivelPericulosidadeUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<NivelPericulosidadeDTO> getById(@PathVariable int id) {
-        NivelPericulosidadeDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        NivelPericulosidadeDTO nivelPericulosidade = nivelPericulosidadeUseCase.getById(id);
+        return ResponseEntity.ok(nivelPericulosidade);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<NivelPericulosidadeDTO>> getAll() {
-        List<NivelPericulosidadeDTO> lista = this.grupousecase.getAll();
+        List<NivelPericulosidadeDTO> lista = nivelPericulosidadeUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoRiscoPotencialDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.TipoRiscoPotencialUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/tipoRiscoPotencial")
 public class TipoRiscoPotencialRestController {
 
-    private final TipoRiscoPotencialUseCase grupousecase;
+    private final AuxiliarUseCase<TipoRiscoPotencialDTO, Integer> tipoRiscoPotencialUseCase;
 
-    public TipoRiscoPotencialRestController(TipoRiscoPotencialUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public TipoRiscoPotencialRestController(AuxiliarUseCase<TipoRiscoPotencialDTO, Integer> tipoRiscoPotencialUseCase) {
+        this.tipoRiscoPotencialUseCase = tipoRiscoPotencialUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TipoRiscoPotencialDTO> insert(@RequestBody TipoRiscoPotencialDTO grupo) {
-        TipoRiscoPotencialDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<TipoRiscoPotencialDTO> insert(@RequestBody TipoRiscoPotencialDTO tipoRiscoPotencial) {
+        TipoRiscoPotencialDTO tipoRiscoPotencialDTO = tipoRiscoPotencialUseCase.insert(tipoRiscoPotencial);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tipoRiscoPotencialDTO);
     }
 
     @PutMapping
-    public ResponseEntity<TipoRiscoPotencialDTO> update(@RequestBody TipoRiscoPotencialDTO grupo) {
-        TipoRiscoPotencialDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<TipoRiscoPotencialDTO> update(@RequestBody TipoRiscoPotencialDTO tipoRiscoPotencial) {
+        TipoRiscoPotencialDTO tipoRiscoPotencialDTO = tipoRiscoPotencialUseCase.update(tipoRiscoPotencial);
+        return ResponseEntity.ok(tipoRiscoPotencialDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = tipoRiscoPotencialUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TipoRiscoPotencialDTO> getById(@PathVariable int id) {
-        TipoRiscoPotencialDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        TipoRiscoPotencialDTO tipoRiscoPotencial = tipoRiscoPotencialUseCase.getById(id);
+        return ResponseEntity.ok(tipoRiscoPotencial);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<TipoRiscoPotencialDTO>> getAll() {
-        List<TipoRiscoPotencialDTO> lista = this.grupousecase.getAll();
+        List<TipoRiscoPotencialDTO> lista = tipoRiscoPotencialUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

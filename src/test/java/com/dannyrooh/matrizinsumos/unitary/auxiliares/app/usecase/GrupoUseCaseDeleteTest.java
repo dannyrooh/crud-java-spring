@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.GrupoRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.GrupoDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.GrupoUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.GrupoUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithIdNotFoundException;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 
@@ -26,13 +25,11 @@ class GrupoUseCaseDeleteTest {
 
     private GrupoRepository grupoRepository;
     private GrupoUseCaseImpl grupoUseCase;
-    private GrupoUseCaseValidateImpl grupoUseCaseValidateImpl;
 
     @BeforeEach
     void setUp() {
         grupoRepository = mock(GrupoRepository.class);
-        grupoUseCaseValidateImpl = new GrupoUseCaseValidateImpl();
-        grupoUseCase = new GrupoUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+        grupoUseCase = new GrupoUseCaseImpl(grupoRepository);
     }
 
     @Test
@@ -52,7 +49,7 @@ class GrupoUseCaseDeleteTest {
     }
 
     @Test
-    void testDeleted() {
+    void testDeleted() throws ValidationException {
 
         doNothing().when(grupoRepository).deleteById(1);
         when(grupoRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
@@ -63,7 +60,5 @@ class GrupoUseCaseDeleteTest {
                     grupoUseCase.insert(new GrupoDTO(1, "TestGroup First"));
                     grupoUseCase.delete(1);
                 });
-
     }
-
 }

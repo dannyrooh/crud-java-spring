@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.ModoAcaoDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.ModoAcaoUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/modoAcao")
 public class ModoAcaoRestController {
 
-    private final ModoAcaoUseCase grupousecase;
+    private final AuxiliarUseCase<ModoAcaoDTO, Integer> modoAcaoUseCase;
 
-    public ModoAcaoRestController(ModoAcaoUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public ModoAcaoRestController(AuxiliarUseCase<ModoAcaoDTO, Integer> modoAcaoUseCase) {
+        this.modoAcaoUseCase = modoAcaoUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ModoAcaoDTO> insert(@RequestBody ModoAcaoDTO grupo) {
-        ModoAcaoDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<ModoAcaoDTO> insert(@RequestBody ModoAcaoDTO modoAcao) {
+        ModoAcaoDTO modoAcaoDTO = modoAcaoUseCase.insert(modoAcao);
+        return ResponseEntity.status(HttpStatus.CREATED).body(modoAcaoDTO);
     }
 
     @PutMapping
-    public ResponseEntity<ModoAcaoDTO> update(@RequestBody ModoAcaoDTO grupo) {
-        ModoAcaoDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<ModoAcaoDTO> update(@RequestBody ModoAcaoDTO modoAcao) {
+        ModoAcaoDTO modoAcaoDTO = modoAcaoUseCase.update(modoAcao);
+        return ResponseEntity.ok(modoAcaoDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = modoAcaoUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ModoAcaoDTO> getById(@PathVariable int id) {
-        ModoAcaoDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        ModoAcaoDTO modoAcao = modoAcaoUseCase.getById(id);
+        return ResponseEntity.ok(modoAcao);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<ModoAcaoDTO>> getAll() {
-        List<ModoAcaoDTO> lista = this.grupousecase.getAll();
+        List<ModoAcaoDTO> lista = modoAcaoUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

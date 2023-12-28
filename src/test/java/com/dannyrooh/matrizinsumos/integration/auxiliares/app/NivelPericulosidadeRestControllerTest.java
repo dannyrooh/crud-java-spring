@@ -1,8 +1,8 @@
 package com.dannyrooh.matrizinsumos.integration.auxiliares.app;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.NivelPericulosidadeDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.NivelPericulosidadeUseCase;
 import com.dannyrooh.matrizinsumos.auxiliares.entrypoint.controller.NivelPericulosidadeRestController;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,55 +28,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class NivelPericulosidadeRestControllerTest {
 
     @Mock
-    private NivelPericulosidadeUseCase grupoUseCase;
+    private AuxiliarUseCase<NivelPericulosidadeDTO, Integer> nivelPericulosidadeUseCase;
 
     @InjectMocks
-    private NivelPericulosidadeRestController grupoRestController;
+    private NivelPericulosidadeRestController nivelPericulosidadeRestController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(grupoRestController).build();
-        objectMapper = new ObjectMapper();        
+        mockMvc = MockMvcBuilders.standaloneSetup(nivelPericulosidadeRestController).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
     void testInsert() throws Exception {
-        NivelPericulosidadeDTO grupoDTO = new NivelPericulosidadeDTO(1, "Test Group");
+        NivelPericulosidadeDTO nivelPericulosidadeDTO = new NivelPericulosidadeDTO(1, "Test NivelPericulosidade");
 
-        when(grupoUseCase.insert(any(NivelPericulosidadeDTO.class))).thenReturn(grupoDTO);
+        when(nivelPericulosidadeUseCase.insert(any(NivelPericulosidadeDTO.class))).thenReturn(nivelPericulosidadeDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.post("/nivelPericulosidade")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTO)))
+                .content(objectMapper.writeValueAsString(nivelPericulosidadeDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test NivelPericulosidade"));
     }
 
     @Test
     void testUpdate() throws Exception {
-        NivelPericulosidadeDTO grupoDTOToUpdate = new NivelPericulosidadeDTO(1, "Updated Group");
+        NivelPericulosidadeDTO nivelPericulosidadeDTOToUpdate = new NivelPericulosidadeDTO(1, "Update NivelPericulosidade");
 
-        when(grupoUseCase.update(any(NivelPericulosidadeDTO.class))).thenReturn(grupoDTOToUpdate);
+        when(nivelPericulosidadeUseCase.update(any(NivelPericulosidadeDTO.class))).thenReturn(nivelPericulosidadeDTOToUpdate);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.put("/nivelPericulosidade")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTOToUpdate)))
+                .content(objectMapper.writeValueAsString(nivelPericulosidadeDTOToUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Updated Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Update NivelPericulosidade"));
     }
 
     @Test
     void testDelete() throws Exception {
         int idToDelete = 1;
 
-        when(grupoUseCase.delete(idToDelete)).thenReturn(true);
+        when(nivelPericulosidadeUseCase.delete(idToDelete)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/nivelPericulosidade/{id}", idToDelete)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(true));
@@ -85,35 +85,35 @@ class NivelPericulosidadeRestControllerTest {
     @Test
     void testGetById() throws Exception {
         int idToGet = 1;
-        NivelPericulosidadeDTO grupoDTO = new NivelPericulosidadeDTO(idToGet, "Test Group");
+        NivelPericulosidadeDTO nivelPericulosidadeDTO = new NivelPericulosidadeDTO(idToGet, "Test NivelPericulosidade");
 
-        when(grupoUseCase.getById(idToGet)).thenReturn(grupoDTO);
+        when(nivelPericulosidadeUseCase.getById(idToGet)).thenReturn(nivelPericulosidadeDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/{id}", idToGet)
+        mockMvc.perform(MockMvcRequestBuilders.get("/nivelPericulosidade/{id}", idToGet)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToGet))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test NivelPericulosidade"));
     }
 
     @Test
     void testGetAll() throws Exception {
-        List<NivelPericulosidadeDTO> grupoDTOList = Arrays.asList(
-                new NivelPericulosidadeDTO(1, "Group 1"),
-                new NivelPericulosidadeDTO(2, "Group 2"),
-                new NivelPericulosidadeDTO(3, "Group 3"));
+        List<NivelPericulosidadeDTO> nivelPericulosidadeDTOList = Arrays.asList(
+                new NivelPericulosidadeDTO(1, "NivelPericulosidade 1"),
+                new NivelPericulosidadeDTO(2, "NivelPericulosidade 2"),
+                new NivelPericulosidadeDTO(3, "NivelPericulosidade 3"));
 
-        when(grupoUseCase.getAll()).thenReturn(grupoDTOList);
+        when(nivelPericulosidadeUseCase.getAll()).thenReturn(nivelPericulosidadeDTOList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/all")
+        mockMvc.perform(MockMvcRequestBuilders.get("/nivelPericulosidade/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(grupoDTOList.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(nivelPericulosidadeDTOList.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Group 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("NivelPericulosidade 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Group 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("NivelPericulosidade 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Group 3"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("NivelPericulosidade 3"));
     }
 }

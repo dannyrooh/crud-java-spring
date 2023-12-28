@@ -4,18 +4,8 @@ import org.mapstruct.Mapper;
 
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.TipoPersistencia;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoPersistenciaDTO;
-
-import java.util.List;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.mapper.AuxiliarMapper;
 
 @Mapper(componentModel = "spring")
-public interface TipoPersistenciaMapper {
-
-    TipoPersistencia grupoDTOToTipoPersistencia(TipoPersistenciaDTO grupoDto);
-
-    TipoPersistenciaDTO grupoToTipoPersistenciaDTO(TipoPersistencia grupo);
-
-    List<TipoPersistencia> listTipoPersistenciaDTOToListTipoPersistencia(List<TipoPersistenciaDTO> grupoDTOList);
-
-    List<TipoPersistenciaDTO> listTipoPersistenciaToListTipoPersistenciaDTO(List<TipoPersistencia> grupoList);
-
+public interface TipoPersistenciaMapper extends AuxiliarMapper<TipoPersistencia, TipoPersistenciaDTO> {
 }

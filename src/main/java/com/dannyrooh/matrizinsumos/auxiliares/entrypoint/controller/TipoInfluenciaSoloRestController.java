@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoInfluenciaSoloDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.TipoInfluenciaSoloUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/tipoInfluenciaSolo")
 public class TipoInfluenciaSoloRestController {
 
-    private final TipoInfluenciaSoloUseCase grupousecase;
+    private final AuxiliarUseCase<TipoInfluenciaSoloDTO, Integer> tipoInfluenciaSoloUseCase;
 
-    public TipoInfluenciaSoloRestController(TipoInfluenciaSoloUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public TipoInfluenciaSoloRestController(AuxiliarUseCase<TipoInfluenciaSoloDTO, Integer> tipoInfluenciaSoloUseCase) {
+        this.tipoInfluenciaSoloUseCase = tipoInfluenciaSoloUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TipoInfluenciaSoloDTO> insert(@RequestBody TipoInfluenciaSoloDTO grupo) {
-        TipoInfluenciaSoloDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<TipoInfluenciaSoloDTO> insert(@RequestBody TipoInfluenciaSoloDTO tipoInfluenciaSolo) {
+        TipoInfluenciaSoloDTO tipoInfluenciaSoloDTO = tipoInfluenciaSoloUseCase.insert(tipoInfluenciaSolo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tipoInfluenciaSoloDTO);
     }
 
     @PutMapping
-    public ResponseEntity<TipoInfluenciaSoloDTO> update(@RequestBody TipoInfluenciaSoloDTO grupo) {
-        TipoInfluenciaSoloDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<TipoInfluenciaSoloDTO> update(@RequestBody TipoInfluenciaSoloDTO tipoInfluenciaSolo) {
+        TipoInfluenciaSoloDTO tipoInfluenciaSoloDTO = tipoInfluenciaSoloUseCase.update(tipoInfluenciaSolo);
+        return ResponseEntity.ok(tipoInfluenciaSoloDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = tipoInfluenciaSoloUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TipoInfluenciaSoloDTO> getById(@PathVariable int id) {
-        TipoInfluenciaSoloDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        TipoInfluenciaSoloDTO tipoInfluenciaSolo = tipoInfluenciaSoloUseCase.getById(id);
+        return ResponseEntity.ok(tipoInfluenciaSolo);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<TipoInfluenciaSoloDTO>> getAll() {
-        List<TipoInfluenciaSoloDTO> lista = this.grupousecase.getAll();
+        List<TipoInfluenciaSoloDTO> lista = tipoInfluenciaSoloUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

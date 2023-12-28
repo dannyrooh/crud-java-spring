@@ -11,7 +11,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.TipoRiscoPotenc
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.TipoRiscoPotencialRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoRiscoPotencialDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.TipoRiscoPotencialUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.TipoRiscoPotencialUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
 import com.dannyrooh.matrizinsumos.exception.WithNameMaxSizeException;
@@ -23,59 +22,57 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("teste")
 class TipoRiscoPotencialUseCaseInsertTest {
 
-    private TipoRiscoPotencialRepository grupoRepository;
-    private TipoRiscoPotencialUseCaseImpl grupoUseCase;
-    private TipoRiscoPotencialUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private TipoRiscoPotencialRepository tipoRiscoPotencialRepository;
+    private TipoRiscoPotencialUseCaseImpl tipoRiscoPotencialUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(TipoRiscoPotencialRepository.class);
-        grupoUseCaseValidateImpl = new TipoRiscoPotencialUseCaseValidateImpl();
-        grupoUseCase = new TipoRiscoPotencialUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
-    }
+        tipoRiscoPotencialRepository = mock(TipoRiscoPotencialRepository.class);
 
-    private void insertTipoRiscoPotencial(TipoRiscoPotencialDTO grupoDTO) {
-        grupoUseCase.insert(grupoDTO);
+        tipoRiscoPotencialUseCase = new TipoRiscoPotencialUseCaseImpl(tipoRiscoPotencialRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testInsertWithEmptyNameException() throws WithNameEmptyException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> insertTipoRiscoPotencial(new TipoRiscoPotencialDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> insertTipoRiscoPotencial(null)));
+        assertThrows(WithNameEmptyException.class, () -> tipoRiscoPotencialUseCase.insert(new TipoRiscoPotencialDTO(1, "")));
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testInsertIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> tipoRiscoPotencialUseCase.insert(null));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameMaxSizeException quando o nome for superior a 50 caracteres")
     void testInsertWithNameMaxCharacterException() throws WithNameMaxSizeException {
         String longName = "a".repeat(51);
-        assertThrows(WithNameMaxSizeException.class, () -> grupoUseCase.insert(new TipoRiscoPotencialDTO(0, longName)));
+        assertThrows(WithNameMaxSizeException.class, () -> tipoRiscoPotencialUseCase.insert(new TipoRiscoPotencialDTO(0, longName)));
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um grupo como o nome informado")
+    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um tipoRiscoPotencial como o nome informado")
     void testInsertWithNameAlreadInformedException() throws WithNameAlreadInformedException {
 
-        when(grupoRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
-        TipoRiscoPotencialDTO grupoDTO = new TipoRiscoPotencialDTO(0, "TestGroup");
+        when(tipoRiscoPotencialRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
+        TipoRiscoPotencialDTO tipoRiscoPotencialDTO = new TipoRiscoPotencialDTO(0, "TestGroup");
         assertThrows(WithNameAlreadInformedException.class,
-                () -> grupoUseCase.insert(grupoDTO));
+                () -> tipoRiscoPotencialUseCase.insert(tipoRiscoPotencialDTO));
     }
 
     @Test
     @DisplayName("Deve inserir o objeto no banco de dados e retornar com o código gerado")
     void testInsertWithNonEmptyName() throws ValidationException {
-        TipoRiscoPotencialDTO grupoDTO = new TipoRiscoPotencialDTO(0, "TestGroup");
-        when(grupoRepository.save(any(TipoRiscoPotencial.class))).thenReturn(new TipoRiscoPotencial());
-        TipoRiscoPotencialDTO result = grupoUseCase.insert(grupoDTO);
+        TipoRiscoPotencialDTO tipoRiscoPotencialDTO = new TipoRiscoPotencialDTO(0, "TestGroup");
+        when(tipoRiscoPotencialRepository.save(any(TipoRiscoPotencial.class))).thenReturn(new TipoRiscoPotencial());
+        TipoRiscoPotencialDTO result = tipoRiscoPotencialUseCase.insert(tipoRiscoPotencialDTO);
         assertNotNull(result);
 
     }

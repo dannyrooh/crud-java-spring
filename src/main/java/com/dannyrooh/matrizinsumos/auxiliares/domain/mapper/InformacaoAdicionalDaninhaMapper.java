@@ -4,18 +4,8 @@ import org.mapstruct.Mapper;
 
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.InformacaoAdicionalDaninha;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.InformacaoAdicionalDaninhaDTO;
-
-import java.util.List;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.mapper.AuxiliarMapper;
 
 @Mapper(componentModel = "spring")
-public interface InformacaoAdicionalDaninhaMapper {
-
-    InformacaoAdicionalDaninha grupoDTOToInformacaoAdicionalDaninha(InformacaoAdicionalDaninhaDTO grupoDto);
-
-    InformacaoAdicionalDaninhaDTO grupoToInformacaoAdicionalDaninhaDTO(InformacaoAdicionalDaninha grupo);
-
-    List<InformacaoAdicionalDaninha> listInformacaoAdicionalDaninhaDTOToListInformacaoAdicionalDaninha(List<InformacaoAdicionalDaninhaDTO> grupoDTOList);
-
-    List<InformacaoAdicionalDaninhaDTO> listInformacaoAdicionalDaninhaToListInformacaoAdicionalDaninhaDTO(List<InformacaoAdicionalDaninha> grupoList);
-
+public interface InformacaoAdicionalDaninhaMapper extends AuxiliarMapper<InformacaoAdicionalDaninha, InformacaoAdicionalDaninhaDTO> {
 }

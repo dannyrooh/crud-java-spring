@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.ClasseProdutoDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.ClasseProdutoUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/classeProduto")
 public class ClasseProdutoRestController {
 
-    private final ClasseProdutoUseCase grupousecase;
+    private final AuxiliarUseCase<ClasseProdutoDTO, Integer> classeProdutoUseCase;
 
-    public ClasseProdutoRestController(ClasseProdutoUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public ClasseProdutoRestController(AuxiliarUseCase<ClasseProdutoDTO, Integer> classeProdutoUseCase) {
+        this.classeProdutoUseCase = classeProdutoUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ClasseProdutoDTO> insert(@RequestBody ClasseProdutoDTO grupo) {
-        ClasseProdutoDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<ClasseProdutoDTO> insert(@RequestBody ClasseProdutoDTO classeProduto) {
+        ClasseProdutoDTO classeProdutoDTO = classeProdutoUseCase.insert(classeProduto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(classeProdutoDTO);
     }
 
     @PutMapping
-    public ResponseEntity<ClasseProdutoDTO> update(@RequestBody ClasseProdutoDTO grupo) {
-        ClasseProdutoDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<ClasseProdutoDTO> update(@RequestBody ClasseProdutoDTO classeProduto) {
+        ClasseProdutoDTO classeProdutoDTO = classeProdutoUseCase.update(classeProduto);
+        return ResponseEntity.ok(classeProdutoDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = classeProdutoUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ClasseProdutoDTO> getById(@PathVariable int id) {
-        ClasseProdutoDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        ClasseProdutoDTO classeProduto = classeProdutoUseCase.getById(id);
+        return ResponseEntity.ok(classeProduto);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<ClasseProdutoDTO>> getAll() {
-        List<ClasseProdutoDTO> lista = this.grupousecase.getAll();
+        List<ClasseProdutoDTO> lista = classeProdutoUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

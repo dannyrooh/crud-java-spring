@@ -1,8 +1,8 @@
 package com.dannyrooh.matrizinsumos.integration.auxiliares.app;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoLixiviacaoDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.TipoLixiviacaoUseCase;
 import com.dannyrooh.matrizinsumos.auxiliares.entrypoint.controller.TipoLixiviacaoRestController;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,55 +28,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TipoLixiviacaoRestControllerTest {
 
     @Mock
-    private TipoLixiviacaoUseCase grupoUseCase;
+    private AuxiliarUseCase<TipoLixiviacaoDTO, Integer> tipoLixiviacaoUseCase;
 
     @InjectMocks
-    private TipoLixiviacaoRestController grupoRestController;
+    private TipoLixiviacaoRestController tipoLixiviacaoRestController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(grupoRestController).build();
-        objectMapper = new ObjectMapper();        
+        mockMvc = MockMvcBuilders.standaloneSetup(tipoLixiviacaoRestController).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
     void testInsert() throws Exception {
-        TipoLixiviacaoDTO grupoDTO = new TipoLixiviacaoDTO(1, "Test Group");
+        TipoLixiviacaoDTO tipoLixiviacaoDTO = new TipoLixiviacaoDTO(1, "Test TipoLixiviacao");
 
-        when(grupoUseCase.insert(any(TipoLixiviacaoDTO.class))).thenReturn(grupoDTO);
+        when(tipoLixiviacaoUseCase.insert(any(TipoLixiviacaoDTO.class))).thenReturn(tipoLixiviacaoDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.post("/tipoLixiviacao")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTO)))
+                .content(objectMapper.writeValueAsString(tipoLixiviacaoDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test TipoLixiviacao"));
     }
 
     @Test
     void testUpdate() throws Exception {
-        TipoLixiviacaoDTO grupoDTOToUpdate = new TipoLixiviacaoDTO(1, "Updated Group");
+        TipoLixiviacaoDTO tipoLixiviacaoDTOToUpdate = new TipoLixiviacaoDTO(1, "Update TipoLixiviacao");
 
-        when(grupoUseCase.update(any(TipoLixiviacaoDTO.class))).thenReturn(grupoDTOToUpdate);
+        when(tipoLixiviacaoUseCase.update(any(TipoLixiviacaoDTO.class))).thenReturn(tipoLixiviacaoDTOToUpdate);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.put("/tipoLixiviacao")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTOToUpdate)))
+                .content(objectMapper.writeValueAsString(tipoLixiviacaoDTOToUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Updated Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Update TipoLixiviacao"));
     }
 
     @Test
     void testDelete() throws Exception {
         int idToDelete = 1;
 
-        when(grupoUseCase.delete(idToDelete)).thenReturn(true);
+        when(tipoLixiviacaoUseCase.delete(idToDelete)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/tipoLixiviacao/{id}", idToDelete)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(true));
@@ -85,35 +85,35 @@ class TipoLixiviacaoRestControllerTest {
     @Test
     void testGetById() throws Exception {
         int idToGet = 1;
-        TipoLixiviacaoDTO grupoDTO = new TipoLixiviacaoDTO(idToGet, "Test Group");
+        TipoLixiviacaoDTO tipoLixiviacaoDTO = new TipoLixiviacaoDTO(idToGet, "Test TipoLixiviacao");
 
-        when(grupoUseCase.getById(idToGet)).thenReturn(grupoDTO);
+        when(tipoLixiviacaoUseCase.getById(idToGet)).thenReturn(tipoLixiviacaoDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/{id}", idToGet)
+        mockMvc.perform(MockMvcRequestBuilders.get("/tipoLixiviacao/{id}", idToGet)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToGet))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test TipoLixiviacao"));
     }
 
     @Test
     void testGetAll() throws Exception {
-        List<TipoLixiviacaoDTO> grupoDTOList = Arrays.asList(
-                new TipoLixiviacaoDTO(1, "Group 1"),
-                new TipoLixiviacaoDTO(2, "Group 2"),
-                new TipoLixiviacaoDTO(3, "Group 3"));
+        List<TipoLixiviacaoDTO> tipoLixiviacaoDTOList = Arrays.asList(
+                new TipoLixiviacaoDTO(1, "TipoLixiviacao 1"),
+                new TipoLixiviacaoDTO(2, "TipoLixiviacao 2"),
+                new TipoLixiviacaoDTO(3, "TipoLixiviacao 3"));
 
-        when(grupoUseCase.getAll()).thenReturn(grupoDTOList);
+        when(tipoLixiviacaoUseCase.getAll()).thenReturn(tipoLixiviacaoDTOList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/all")
+        mockMvc.perform(MockMvcRequestBuilders.get("/tipoLixiviacao/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(grupoDTOList.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(tipoLixiviacaoDTOList.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Group 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("TipoLixiviacao 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Group 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("TipoLixiviacao 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Group 3"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("TipoLixiviacao 3"));
     }
 }

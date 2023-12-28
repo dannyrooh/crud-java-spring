@@ -1,8 +1,8 @@
 package com.dannyrooh.matrizinsumos.integration.auxiliares.app;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.ModoAcaoDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.ModoAcaoUseCase;
 import com.dannyrooh.matrizinsumos.auxiliares.entrypoint.controller.ModoAcaoRestController;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,55 +28,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ModoAcaoRestControllerTest {
 
     @Mock
-    private ModoAcaoUseCase grupoUseCase;
+    private AuxiliarUseCase<ModoAcaoDTO, Integer> modoAcaoUseCase;
 
     @InjectMocks
-    private ModoAcaoRestController grupoRestController;
+    private ModoAcaoRestController modoAcaoRestController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(grupoRestController).build();
-        objectMapper = new ObjectMapper();        
+        mockMvc = MockMvcBuilders.standaloneSetup(modoAcaoRestController).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
     void testInsert() throws Exception {
-        ModoAcaoDTO grupoDTO = new ModoAcaoDTO(1, "Test Group");
+        ModoAcaoDTO modoAcaoDTO = new ModoAcaoDTO(1, "Test ModoAcao");
 
-        when(grupoUseCase.insert(any(ModoAcaoDTO.class))).thenReturn(grupoDTO);
+        when(modoAcaoUseCase.insert(any(ModoAcaoDTO.class))).thenReturn(modoAcaoDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.post("/modoAcao")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTO)))
+                .content(objectMapper.writeValueAsString(modoAcaoDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test ModoAcao"));
     }
 
     @Test
     void testUpdate() throws Exception {
-        ModoAcaoDTO grupoDTOToUpdate = new ModoAcaoDTO(1, "Updated Group");
+        ModoAcaoDTO modoAcaoDTOToUpdate = new ModoAcaoDTO(1, "Update ModoAcao");
 
-        when(grupoUseCase.update(any(ModoAcaoDTO.class))).thenReturn(grupoDTOToUpdate);
+        when(modoAcaoUseCase.update(any(ModoAcaoDTO.class))).thenReturn(modoAcaoDTOToUpdate);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.put("/modoAcao")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTOToUpdate)))
+                .content(objectMapper.writeValueAsString(modoAcaoDTOToUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Updated Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Update ModoAcao"));
     }
 
     @Test
     void testDelete() throws Exception {
         int idToDelete = 1;
 
-        when(grupoUseCase.delete(idToDelete)).thenReturn(true);
+        when(modoAcaoUseCase.delete(idToDelete)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/modoAcao/{id}", idToDelete)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(true));
@@ -85,35 +85,35 @@ class ModoAcaoRestControllerTest {
     @Test
     void testGetById() throws Exception {
         int idToGet = 1;
-        ModoAcaoDTO grupoDTO = new ModoAcaoDTO(idToGet, "Test Group");
+        ModoAcaoDTO modoAcaoDTO = new ModoAcaoDTO(idToGet, "Test ModoAcao");
 
-        when(grupoUseCase.getById(idToGet)).thenReturn(grupoDTO);
+        when(modoAcaoUseCase.getById(idToGet)).thenReturn(modoAcaoDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/{id}", idToGet)
+        mockMvc.perform(MockMvcRequestBuilders.get("/modoAcao/{id}", idToGet)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToGet))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test ModoAcao"));
     }
 
     @Test
     void testGetAll() throws Exception {
-        List<ModoAcaoDTO> grupoDTOList = Arrays.asList(
-                new ModoAcaoDTO(1, "Group 1"),
-                new ModoAcaoDTO(2, "Group 2"),
-                new ModoAcaoDTO(3, "Group 3"));
+        List<ModoAcaoDTO> modoAcaoDTOList = Arrays.asList(
+                new ModoAcaoDTO(1, "ModoAcao 1"),
+                new ModoAcaoDTO(2, "ModoAcao 2"),
+                new ModoAcaoDTO(3, "ModoAcao 3"));
 
-        when(grupoUseCase.getAll()).thenReturn(grupoDTOList);
+        when(modoAcaoUseCase.getAll()).thenReturn(modoAcaoDTOList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/all")
+        mockMvc.perform(MockMvcRequestBuilders.get("/modoAcao/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(grupoDTOList.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(modoAcaoDTOList.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Group 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("ModoAcao 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Group 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("ModoAcao 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Group 3"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("ModoAcao 3"));
     }
 }

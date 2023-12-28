@@ -11,7 +11,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.ClasseProduto;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.ClasseProdutoRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.ClasseProdutoDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.ClasseProdutoUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.ClasseProdutoUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
 import com.dannyrooh.matrizinsumos.exception.WithNameMaxSizeException;
@@ -23,59 +22,57 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("teste")
 class ClasseProdutoUseCaseInsertTest {
 
-    private ClasseProdutoRepository grupoRepository;
-    private ClasseProdutoUseCaseImpl grupoUseCase;
-    private ClasseProdutoUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private ClasseProdutoRepository classeProdutoRepository;
+    private ClasseProdutoUseCaseImpl classeProdutoUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(ClasseProdutoRepository.class);
-        grupoUseCaseValidateImpl = new ClasseProdutoUseCaseValidateImpl();
-        grupoUseCase = new ClasseProdutoUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
-    }
+        classeProdutoRepository = mock(ClasseProdutoRepository.class);
 
-    private void insertClasseProduto(ClasseProdutoDTO grupoDTO) {
-        grupoUseCase.insert(grupoDTO);
+        classeProdutoUseCase = new ClasseProdutoUseCaseImpl(classeProdutoRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testInsertWithEmptyNameException() throws WithNameEmptyException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> insertClasseProduto(new ClasseProdutoDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> insertClasseProduto(null)));
+        assertThrows(WithNameEmptyException.class, () -> classeProdutoUseCase.insert(new ClasseProdutoDTO(1, "")));
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testInsertIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> classeProdutoUseCase.insert(null));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameMaxSizeException quando o nome for superior a 50 caracteres")
     void testInsertWithNameMaxCharacterException() throws WithNameMaxSizeException {
         String longName = "a".repeat(51);
-        assertThrows(WithNameMaxSizeException.class, () -> grupoUseCase.insert(new ClasseProdutoDTO(0, longName)));
+        assertThrows(WithNameMaxSizeException.class, () -> classeProdutoUseCase.insert(new ClasseProdutoDTO(0, longName)));
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um grupo como o nome informado")
+    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um classeProduto como o nome informado")
     void testInsertWithNameAlreadInformedException() throws WithNameAlreadInformedException {
 
-        when(grupoRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
-        ClasseProdutoDTO grupoDTO = new ClasseProdutoDTO(0, "TestGroup");
+        when(classeProdutoRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
+        ClasseProdutoDTO classeProdutoDTO = new ClasseProdutoDTO(0, "TestGroup");
         assertThrows(WithNameAlreadInformedException.class,
-                () -> grupoUseCase.insert(grupoDTO));
+                () -> classeProdutoUseCase.insert(classeProdutoDTO));
     }
 
     @Test
     @DisplayName("Deve inserir o objeto no banco de dados e retornar com o código gerado")
     void testInsertWithNonEmptyName() throws ValidationException {
-        ClasseProdutoDTO grupoDTO = new ClasseProdutoDTO(0, "TestGroup");
-        when(grupoRepository.save(any(ClasseProduto.class))).thenReturn(new ClasseProduto());
-        ClasseProdutoDTO result = grupoUseCase.insert(grupoDTO);
+        ClasseProdutoDTO classeProdutoDTO = new ClasseProdutoDTO(0, "TestGroup");
+        when(classeProdutoRepository.save(any(ClasseProduto.class))).thenReturn(new ClasseProduto());
+        ClasseProdutoDTO result = classeProdutoUseCase.insert(classeProdutoDTO);
         assertNotNull(result);
 
     }

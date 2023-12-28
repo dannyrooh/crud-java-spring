@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.GeneroRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.GeneroDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.GeneroUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.GeneroUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithIdNotFoundException;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 
@@ -24,46 +23,42 @@ import javax.xml.bind.ValidationException;
 @ExtendWith(MockitoExtension.class)
 class GeneroUseCaseDeleteTest {
 
-    private GeneroRepository grupoRepository;
-    private GeneroUseCaseImpl grupoUseCase;
-    private GeneroUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private GeneroRepository generoRepository;
+    private GeneroUseCaseImpl generoUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(GeneroRepository.class);
-        grupoUseCaseValidateImpl = new GeneroUseCaseValidateImpl();
-        grupoUseCase = new GeneroUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+        generoRepository = mock(GeneroRepository.class);
+        generoUseCase = new GeneroUseCaseImpl(generoRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdZeroOrNot'InformedException quando o id for menor que zero")
     void testDeleteIdNotOrZeroInformedException() throws ValidationException {
         assertThrows(WithIdZeroOrNotInformedException.class,
-                () -> grupoUseCase.delete(0));
+                () -> generoUseCase.delete(0));
         assertThrows(WithIdZeroOrNotInformedException.class,
-                () -> grupoUseCase.delete(-1));
+                () -> generoUseCase.delete(-1));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id não existe na base de dados")
     void testDeleteIdNotFoundException() throws ValidationException {
         assertThrows(WithIdNotFoundException.class,
-                () -> grupoUseCase.delete(1));
+                () -> generoUseCase.delete(1));
     }
 
     @Test
-    void testDeleted() {
+    void testDeleted() throws ValidationException {
 
-        doNothing().when(grupoRepository).deleteById(1);
-        when(grupoRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
+        doNothing().when(generoRepository).deleteById(1);
+        when(generoRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
 
         assertDoesNotThrow(
 
                 () -> {
-                    grupoUseCase.insert(new GeneroDTO(1, "TestGroup First"));
-                    grupoUseCase.delete(1);
+                    generoUseCase.insert(new GeneroDTO(1, "TestGroup First"));
+                    generoUseCase.delete(1);
                 });
-
     }
-
 }

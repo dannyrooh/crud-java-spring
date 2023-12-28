@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.PlantaDaninhaDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.PlantaDaninhaUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/plantaDaninha")
 public class PlantaDaninhaRestController {
 
-    private final PlantaDaninhaUseCase grupousecase;
+    private final AuxiliarUseCase<PlantaDaninhaDTO, Integer> plantaDaninhaUseCase;
 
-    public PlantaDaninhaRestController(PlantaDaninhaUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public PlantaDaninhaRestController(AuxiliarUseCase<PlantaDaninhaDTO, Integer> plantaDaninhaUseCase) {
+        this.plantaDaninhaUseCase = plantaDaninhaUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PlantaDaninhaDTO> insert(@RequestBody PlantaDaninhaDTO grupo) {
-        PlantaDaninhaDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<PlantaDaninhaDTO> insert(@RequestBody PlantaDaninhaDTO plantaDaninha) {
+        PlantaDaninhaDTO plantaDaninhaDTO = plantaDaninhaUseCase.insert(plantaDaninha);
+        return ResponseEntity.status(HttpStatus.CREATED).body(plantaDaninhaDTO);
     }
 
     @PutMapping
-    public ResponseEntity<PlantaDaninhaDTO> update(@RequestBody PlantaDaninhaDTO grupo) {
-        PlantaDaninhaDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<PlantaDaninhaDTO> update(@RequestBody PlantaDaninhaDTO plantaDaninha) {
+        PlantaDaninhaDTO plantaDaninhaDTO = plantaDaninhaUseCase.update(plantaDaninha);
+        return ResponseEntity.ok(plantaDaninhaDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = plantaDaninhaUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PlantaDaninhaDTO> getById(@PathVariable int id) {
-        PlantaDaninhaDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        PlantaDaninhaDTO plantaDaninha = plantaDaninhaUseCase.getById(id);
+        return ResponseEntity.ok(plantaDaninha);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<PlantaDaninhaDTO>> getAll() {
-        List<PlantaDaninhaDTO> lista = this.grupousecase.getAll();
+        List<PlantaDaninhaDTO> lista = plantaDaninhaUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

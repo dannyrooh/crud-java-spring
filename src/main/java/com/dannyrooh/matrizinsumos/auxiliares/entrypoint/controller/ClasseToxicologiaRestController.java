@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.ClasseToxicologiaDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.ClasseToxicologiaUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/classeToxicologia")
 public class ClasseToxicologiaRestController {
 
-    private final ClasseToxicologiaUseCase grupousecase;
+    private final AuxiliarUseCase<ClasseToxicologiaDTO, Integer> classeToxicologiaUseCase;
 
-    public ClasseToxicologiaRestController(ClasseToxicologiaUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public ClasseToxicologiaRestController(AuxiliarUseCase<ClasseToxicologiaDTO, Integer> classeToxicologiaUseCase) {
+        this.classeToxicologiaUseCase = classeToxicologiaUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ClasseToxicologiaDTO> insert(@RequestBody ClasseToxicologiaDTO grupo) {
-        ClasseToxicologiaDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<ClasseToxicologiaDTO> insert(@RequestBody ClasseToxicologiaDTO classeToxicologia) {
+        ClasseToxicologiaDTO classeToxicologiaDTO = classeToxicologiaUseCase.insert(classeToxicologia);
+        return ResponseEntity.status(HttpStatus.CREATED).body(classeToxicologiaDTO);
     }
 
     @PutMapping
-    public ResponseEntity<ClasseToxicologiaDTO> update(@RequestBody ClasseToxicologiaDTO grupo) {
-        ClasseToxicologiaDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<ClasseToxicologiaDTO> update(@RequestBody ClasseToxicologiaDTO classeToxicologia) {
+        ClasseToxicologiaDTO classeToxicologiaDTO = classeToxicologiaUseCase.update(classeToxicologia);
+        return ResponseEntity.ok(classeToxicologiaDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = classeToxicologiaUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ClasseToxicologiaDTO> getById(@PathVariable int id) {
-        ClasseToxicologiaDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        ClasseToxicologiaDTO classeToxicologia = classeToxicologiaUseCase.getById(id);
+        return ResponseEntity.ok(classeToxicologia);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<ClasseToxicologiaDTO>> getAll() {
-        List<ClasseToxicologiaDTO> lista = this.grupousecase.getAll();
+        List<ClasseToxicologiaDTO> lista = classeToxicologiaUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

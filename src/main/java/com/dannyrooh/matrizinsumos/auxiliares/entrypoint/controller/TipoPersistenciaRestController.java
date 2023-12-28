@@ -15,46 +15,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoPersistenciaDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.TipoPersistenciaUseCase;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/tipoPersistencia")
 public class TipoPersistenciaRestController {
 
-    private final TipoPersistenciaUseCase grupousecase;
+    private final AuxiliarUseCase<TipoPersistenciaDTO, Integer> tipoPersistenciaUseCase;
 
-    public TipoPersistenciaRestController(TipoPersistenciaUseCase grupousecase) {
-        this.grupousecase = grupousecase;
+    public TipoPersistenciaRestController(AuxiliarUseCase<TipoPersistenciaDTO, Integer> tipoPersistenciaUseCase) {
+        this.tipoPersistenciaUseCase = tipoPersistenciaUseCase;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TipoPersistenciaDTO> insert(@RequestBody TipoPersistenciaDTO grupo) {
-        TipoPersistenciaDTO grupoDTO = this.grupousecase.insert(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoDTO);
+    public ResponseEntity<TipoPersistenciaDTO> insert(@RequestBody TipoPersistenciaDTO tipoPersistencia) {
+        TipoPersistenciaDTO tipoPersistenciaDTO = tipoPersistenciaUseCase.insert(tipoPersistencia);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tipoPersistenciaDTO);
     }
 
     @PutMapping
-    public ResponseEntity<TipoPersistenciaDTO> update(@RequestBody TipoPersistenciaDTO grupo) {
-        TipoPersistenciaDTO grupoDTO = this.grupousecase.update(grupo);
-        return ResponseEntity.ok(grupoDTO);
+    public ResponseEntity<TipoPersistenciaDTO> update(@RequestBody TipoPersistenciaDTO tipoPersistencia) {
+        TipoPersistenciaDTO tipoPersistenciaDTO = tipoPersistenciaUseCase.update(tipoPersistencia);
+        return ResponseEntity.ok(tipoPersistenciaDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = this.grupousecase.delete(id);
+        boolean deleted = tipoPersistenciaUseCase.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TipoPersistenciaDTO> getById(@PathVariable int id) {
-        TipoPersistenciaDTO grupo = this.grupousecase.getById(id);
-        return ResponseEntity.ok(grupo);
+        TipoPersistenciaDTO tipoPersistencia = tipoPersistenciaUseCase.getById(id);
+        return ResponseEntity.ok(tipoPersistencia);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<TipoPersistenciaDTO>> getAll() {
-        List<TipoPersistenciaDTO> lista = this.grupousecase.getAll();
+        List<TipoPersistenciaDTO> lista = tipoPersistenciaUseCase.getAll();
         return ResponseEntity.ok(lista);
     }
 }

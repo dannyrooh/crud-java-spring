@@ -11,7 +11,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.TipoInfluenciaS
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.TipoInfluenciaSoloRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoInfluenciaSoloDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.TipoInfluenciaSoloUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.TipoInfluenciaSoloUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
 import com.dannyrooh.matrizinsumos.exception.WithNameMaxSizeException;
@@ -23,59 +22,57 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("teste")
 class TipoInfluenciaSoloUseCaseInsertTest {
 
-    private TipoInfluenciaSoloRepository grupoRepository;
-    private TipoInfluenciaSoloUseCaseImpl grupoUseCase;
-    private TipoInfluenciaSoloUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private TipoInfluenciaSoloRepository tipoInfluenciaSoloRepository;
+    private TipoInfluenciaSoloUseCaseImpl tipoInfluenciaSoloUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(TipoInfluenciaSoloRepository.class);
-        grupoUseCaseValidateImpl = new TipoInfluenciaSoloUseCaseValidateImpl();
-        grupoUseCase = new TipoInfluenciaSoloUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
-    }
+        tipoInfluenciaSoloRepository = mock(TipoInfluenciaSoloRepository.class);
 
-    private void insertTipoInfluenciaSolo(TipoInfluenciaSoloDTO grupoDTO) {
-        grupoUseCase.insert(grupoDTO);
+        tipoInfluenciaSoloUseCase = new TipoInfluenciaSoloUseCaseImpl(tipoInfluenciaSoloRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testInsertWithEmptyNameException() throws WithNameEmptyException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> insertTipoInfluenciaSolo(new TipoInfluenciaSoloDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> insertTipoInfluenciaSolo(null)));
+        assertThrows(WithNameEmptyException.class, () -> tipoInfluenciaSoloUseCase.insert(new TipoInfluenciaSoloDTO(1, "")));
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testInsertIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> tipoInfluenciaSoloUseCase.insert(null));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameMaxSizeException quando o nome for superior a 50 caracteres")
     void testInsertWithNameMaxCharacterException() throws WithNameMaxSizeException {
         String longName = "a".repeat(51);
-        assertThrows(WithNameMaxSizeException.class, () -> grupoUseCase.insert(new TipoInfluenciaSoloDTO(0, longName)));
+        assertThrows(WithNameMaxSizeException.class, () -> tipoInfluenciaSoloUseCase.insert(new TipoInfluenciaSoloDTO(0, longName)));
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um grupo como o nome informado")
+    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um tipoInfluenciaSolo como o nome informado")
     void testInsertWithNameAlreadInformedException() throws WithNameAlreadInformedException {
 
-        when(grupoRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
-        TipoInfluenciaSoloDTO grupoDTO = new TipoInfluenciaSoloDTO(0, "TestGroup");
+        when(tipoInfluenciaSoloRepository.existsByNomeIgnoreCase("TestGroup")).thenReturn(true);
+        TipoInfluenciaSoloDTO tipoInfluenciaSoloDTO = new TipoInfluenciaSoloDTO(0, "TestGroup");
         assertThrows(WithNameAlreadInformedException.class,
-                () -> grupoUseCase.insert(grupoDTO));
+                () -> tipoInfluenciaSoloUseCase.insert(tipoInfluenciaSoloDTO));
     }
 
     @Test
     @DisplayName("Deve inserir o objeto no banco de dados e retornar com o código gerado")
     void testInsertWithNonEmptyName() throws ValidationException {
-        TipoInfluenciaSoloDTO grupoDTO = new TipoInfluenciaSoloDTO(0, "TestGroup");
-        when(grupoRepository.save(any(TipoInfluenciaSolo.class))).thenReturn(new TipoInfluenciaSolo());
-        TipoInfluenciaSoloDTO result = grupoUseCase.insert(grupoDTO);
+        TipoInfluenciaSoloDTO tipoInfluenciaSoloDTO = new TipoInfluenciaSoloDTO(0, "TestGroup");
+        when(tipoInfluenciaSoloRepository.save(any(TipoInfluenciaSolo.class))).thenReturn(new TipoInfluenciaSolo());
+        TipoInfluenciaSoloDTO result = tipoInfluenciaSoloUseCase.insert(tipoInfluenciaSoloDTO);
         assertNotNull(result);
 
     }

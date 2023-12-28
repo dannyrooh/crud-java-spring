@@ -1,8 +1,8 @@
 package com.dannyrooh.matrizinsumos.integration.auxiliares.app;
 
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoRiscoPotencialDTO;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.TipoRiscoPotencialUseCase;
 import com.dannyrooh.matrizinsumos.auxiliares.entrypoint.controller.TipoRiscoPotencialRestController;
+import com.dannyrooh.matrizinsumos.auxiliares.generic.usecase.AuxiliarUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,55 +28,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TipoRiscoPotencialRestControllerTest {
 
     @Mock
-    private TipoRiscoPotencialUseCase grupoUseCase;
+    private AuxiliarUseCase<TipoRiscoPotencialDTO, Integer> tipoRiscoPotencialUseCase;
 
     @InjectMocks
-    private TipoRiscoPotencialRestController grupoRestController;
+    private TipoRiscoPotencialRestController tipoRiscoPotencialRestController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(grupoRestController).build();
-        objectMapper = new ObjectMapper();        
+        mockMvc = MockMvcBuilders.standaloneSetup(tipoRiscoPotencialRestController).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
     void testInsert() throws Exception {
-        TipoRiscoPotencialDTO grupoDTO = new TipoRiscoPotencialDTO(1, "Test Group");
+        TipoRiscoPotencialDTO tipoRiscoPotencialDTO = new TipoRiscoPotencialDTO(1, "Test TipoRiscoPotencial");
 
-        when(grupoUseCase.insert(any(TipoRiscoPotencialDTO.class))).thenReturn(grupoDTO);
+        when(tipoRiscoPotencialUseCase.insert(any(TipoRiscoPotencialDTO.class))).thenReturn(tipoRiscoPotencialDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.post("/tipoRiscoPotencial")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTO)))
+                .content(objectMapper.writeValueAsString(tipoRiscoPotencialDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test TipoRiscoPotencial"));
     }
 
     @Test
     void testUpdate() throws Exception {
-        TipoRiscoPotencialDTO grupoDTOToUpdate = new TipoRiscoPotencialDTO(1, "Updated Group");
+        TipoRiscoPotencialDTO tipoRiscoPotencialDTOToUpdate = new TipoRiscoPotencialDTO(1, "Update TipoRiscoPotencial");
 
-        when(grupoUseCase.update(any(TipoRiscoPotencialDTO.class))).thenReturn(grupoDTOToUpdate);
+        when(tipoRiscoPotencialUseCase.update(any(TipoRiscoPotencialDTO.class))).thenReturn(tipoRiscoPotencialDTOToUpdate);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/grupo")
+        mockMvc.perform(MockMvcRequestBuilders.put("/tipoRiscoPotencial")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(grupoDTOToUpdate)))
+                .content(objectMapper.writeValueAsString(tipoRiscoPotencialDTOToUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Updated Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Update TipoRiscoPotencial"));
     }
 
     @Test
     void testDelete() throws Exception {
         int idToDelete = 1;
 
-        when(grupoUseCase.delete(idToDelete)).thenReturn(true);
+        when(tipoRiscoPotencialUseCase.delete(idToDelete)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/grupo/{id}", idToDelete)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/tipoRiscoPotencial/{id}", idToDelete)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(true));
@@ -85,35 +85,35 @@ class TipoRiscoPotencialRestControllerTest {
     @Test
     void testGetById() throws Exception {
         int idToGet = 1;
-        TipoRiscoPotencialDTO grupoDTO = new TipoRiscoPotencialDTO(idToGet, "Test Group");
+        TipoRiscoPotencialDTO tipoRiscoPotencialDTO = new TipoRiscoPotencialDTO(idToGet, "Test TipoRiscoPotencial");
 
-        when(grupoUseCase.getById(idToGet)).thenReturn(grupoDTO);
+        when(tipoRiscoPotencialUseCase.getById(idToGet)).thenReturn(tipoRiscoPotencialDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/{id}", idToGet)
+        mockMvc.perform(MockMvcRequestBuilders.get("/tipoRiscoPotencial/{id}", idToGet)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idToGet))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test Group"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Test TipoRiscoPotencial"));
     }
 
     @Test
     void testGetAll() throws Exception {
-        List<TipoRiscoPotencialDTO> grupoDTOList = Arrays.asList(
-                new TipoRiscoPotencialDTO(1, "Group 1"),
-                new TipoRiscoPotencialDTO(2, "Group 2"),
-                new TipoRiscoPotencialDTO(3, "Group 3"));
+        List<TipoRiscoPotencialDTO> tipoRiscoPotencialDTOList = Arrays.asList(
+                new TipoRiscoPotencialDTO(1, "TipoRiscoPotencial 1"),
+                new TipoRiscoPotencialDTO(2, "TipoRiscoPotencial 2"),
+                new TipoRiscoPotencialDTO(3, "TipoRiscoPotencial 3"));
 
-        when(grupoUseCase.getAll()).thenReturn(grupoDTOList);
+        when(tipoRiscoPotencialUseCase.getAll()).thenReturn(tipoRiscoPotencialDTOList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/grupo/all")
+        mockMvc.perform(MockMvcRequestBuilders.get("/tipoRiscoPotencial/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(grupoDTOList.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(tipoRiscoPotencialDTOList.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Group 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("TipoRiscoPotencial 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Group 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("TipoRiscoPotencial 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("Group 3"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].nome").value("TipoRiscoPotencial 3"));
     }
 }

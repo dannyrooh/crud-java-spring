@@ -1,0 +1,60 @@
+# Arquivo de teste doscodigos
+
+@hostname = localhost
+@port = 3000
+@host = {{hostname}}:{{port}}
+
+@route = atuacao
+
+@nome = Atuacao
+
+
+
+# Adicionar um registro
+###
+
+POST http://{{host}}/{{route}}  HTTP/1.1
+content-type: application/json
+
+{
+    "nome" : "{{nome}} 10"
+}
+
+
+# TYenta adicionar registro vazio
+###
+POST http://{{host}}/{{route}}  HTTP/1.1
+content-type: application/json
+
+{
+    "nome" : ""
+}
+
+
+# Recuperar o item incluido
+###
+
+GET http://{{host}}/{{route}}/1
+
+
+# Recuperar todos os itens
+###
+
+GET http://{{host}}/{{route}}/all
+
+
+# alterar o registro
+###
+PUT http://{{host}}/{{route}}  HTTP/1.1
+content-type: application/json
+
+{
+    "id" : 5,
+    "nome" : "{{nome}} 2"
+}
+
+
+# Delete
+###
+DELETE http://{{host}}/{{route}}/1
+

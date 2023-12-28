@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.PlantaDaninhaRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.PlantaDaninhaDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.PlantaDaninhaUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.PlantaDaninhaUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithIdNotFoundException;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 
@@ -24,46 +23,42 @@ import javax.xml.bind.ValidationException;
 @ExtendWith(MockitoExtension.class)
 class PlantaDaninhaUseCaseDeleteTest {
 
-    private PlantaDaninhaRepository grupoRepository;
-    private PlantaDaninhaUseCaseImpl grupoUseCase;
-    private PlantaDaninhaUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private PlantaDaninhaRepository plantaDaninhaRepository;
+    private PlantaDaninhaUseCaseImpl plantaDaninhaUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(PlantaDaninhaRepository.class);
-        grupoUseCaseValidateImpl = new PlantaDaninhaUseCaseValidateImpl();
-        grupoUseCase = new PlantaDaninhaUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+        plantaDaninhaRepository = mock(PlantaDaninhaRepository.class);
+        plantaDaninhaUseCase = new PlantaDaninhaUseCaseImpl(plantaDaninhaRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdZeroOrNot'InformedException quando o id for menor que zero")
     void testDeleteIdNotOrZeroInformedException() throws ValidationException {
         assertThrows(WithIdZeroOrNotInformedException.class,
-                () -> grupoUseCase.delete(0));
+                () -> plantaDaninhaUseCase.delete(0));
         assertThrows(WithIdZeroOrNotInformedException.class,
-                () -> grupoUseCase.delete(-1));
+                () -> plantaDaninhaUseCase.delete(-1));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id não existe na base de dados")
     void testDeleteIdNotFoundException() throws ValidationException {
         assertThrows(WithIdNotFoundException.class,
-                () -> grupoUseCase.delete(1));
+                () -> plantaDaninhaUseCase.delete(1));
     }
 
     @Test
-    void testDeleted() {
+    void testDeleted() throws ValidationException {
 
-        doNothing().when(grupoRepository).deleteById(1);
-        when(grupoRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
+        doNothing().when(plantaDaninhaRepository).deleteById(1);
+        when(plantaDaninhaRepository.existsById(1)).thenReturn(Boolean.valueOf(true));
 
         assertDoesNotThrow(
 
                 () -> {
-                    grupoUseCase.insert(new PlantaDaninhaDTO(1, "TestGroup First"));
-                    grupoUseCase.delete(1);
+                    plantaDaninhaUseCase.insert(new PlantaDaninhaDTO(1, "TestGroup First"));
+                    plantaDaninhaUseCase.delete(1);
                 });
-
     }
-
 }

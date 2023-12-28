@@ -10,7 +10,6 @@ import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.model.TipoSolo;
 import com.dannyrooh.matrizinsumos.auxiliares.dataprovider.repository.TipoSoloRepository;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.dto.TipoSoloDTO;
 import com.dannyrooh.matrizinsumos.auxiliares.domain.usecase.impl.TipoSoloUseCaseImpl;
-import com.dannyrooh.matrizinsumos.auxiliares.domain.validate.impl.TipoSoloUseCaseValidateImpl;
 import com.dannyrooh.matrizinsumos.exception.WithIdZeroOrNotInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameAlreadInformedException;
 import com.dannyrooh.matrizinsumos.exception.WithNameEmptyException;
@@ -23,49 +22,50 @@ import static org.mockito.Mockito.when;
 import javax.xml.bind.ValidationException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class TipoSoloUseCaseUpdateTest {
 
-    private TipoSoloRepository grupoRepository;
-    private TipoSoloUseCaseImpl grupoUseCase;
-    private TipoSoloUseCaseValidateImpl grupoUseCaseValidateImpl;
+    private TipoSoloRepository tipoSoloRepository;
+    private TipoSoloUseCaseImpl tipoSoloUseCase;
 
     @BeforeEach
     void setUp() {
-        grupoRepository = mock(TipoSoloRepository.class);
-        grupoUseCaseValidateImpl = new TipoSoloUseCaseValidateImpl();
-        grupoUseCase = new TipoSoloUseCaseImpl(grupoRepository, grupoUseCaseValidateImpl);
+        tipoSoloRepository = mock(TipoSoloRepository.class);
+
+        tipoSoloUseCase = new TipoSoloUseCaseImpl(tipoSoloRepository);
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameEmptyException quando o nome estiver em branco ou for null")
     void testUpdateWithEmptyNameException() throws ValidationException {
-        assertAll(
-                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(new TipoSoloDTO(1, ""))),
-                () -> assertThrows(WithNameEmptyException.class, () -> grupoUseCase.update(null)));
+        assertThrows(WithNameEmptyException.class, () -> tipoSoloUseCase.update(new TipoSoloDTO(1, "")));
+
+    }
+
+    @Test
+    @DisplayName("Deve gerar a exception IllegalArgumentException quando a classe for null")
+    void testUpdateIllegalArgumentException() throws IllegalArgumentException {
+        assertThrows(IllegalArgumentException.class, () -> tipoSoloUseCase.update(null));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithNameMaxSizeException quando o nome for superior a 50 caracteres")
     void testUpdateWithNameMaxCharacterException() throws ValidationException {
         assertThrows(WithNameMaxSizeException.class,
-                () -> grupoUseCase.update(new TipoSoloDTO(1, "a".repeat(51))));
+                () -> tipoSoloUseCase.update(new TipoSoloDTO(1, "a".repeat(51))));
     }
 
     @Test
     @DisplayName("Deve gerar a exception WithIdZeroOrNotInformedException quando o id for menor que zero")
     void testUpdateWithIdZeroOrNotInformedException() throws ValidationException {
 
-        TipoSoloDTO grupo = new TipoSoloDTO();
-        grupo.setNome("WithIdZeroOrNotInformedException");
-        grupo.setId(0);
+        TipoSoloDTO tipoSolo = new TipoSoloDTO(0, "WithIdZeroOrNotInformedException");
 
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
-        grupo.setId(-1);
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> tipoSoloUseCase.update(tipoSolo));
+        tipoSolo.setId(-1);
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> tipoSoloUseCase.update(tipoSolo));
 
     }
 
@@ -73,35 +73,33 @@ class TipoSoloUseCaseUpdateTest {
     @DisplayName("Deve gerar a exception WithIdNotFoundException quando o id não existe na base de dados")
     void testUpdateWithIdNotFoundException() throws ValidationException {
 
-        TipoSoloDTO grupo = new TipoSoloDTO();
-        grupo.setNome("WithIdZeroOrNotInformedException");
-        grupo.setId(0);
+        TipoSoloDTO tipoSolo = new TipoSoloDTO(0, "WithIdZeroOrNotInformedException");
 
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
-        grupo.setId(-1);
-        assertThrows(WithIdZeroOrNotInformedException.class, () -> grupoUseCase.update(grupo));
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> tipoSoloUseCase.update(tipoSolo));
+        tipoSolo.setId(-1);
+        assertThrows(WithIdZeroOrNotInformedException.class, () -> tipoSoloUseCase.update(tipoSolo));
 
     }
 
     @Test
-    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um grupo como o nome informado")
+    @DisplayName("Deve gerar a exception WithNameAlreadInformedException caso já exista um tipoSolo como o nome informado")
     void testUpdateWithNameAlreadInformedException() throws ValidationException {
 
-        when(grupoRepository.save(any(TipoSolo.class))).thenThrow(WithNameAlreadInformedException.class);
+        when(tipoSoloRepository.save(any(TipoSolo.class))).thenThrow(WithNameAlreadInformedException.class);
         assertThrows(WithNameAlreadInformedException.class,
                 () -> {
-                    grupoUseCase.insert(new TipoSoloDTO(1, "TestGroup First"));
-                    grupoUseCase.insert(new TipoSoloDTO(2, "TestGroup Seconde"));
-                    grupoUseCase.update(new TipoSoloDTO(1, "TestGroup Second"));
+                    tipoSoloUseCase.insert(new TipoSoloDTO(1, "TestGroup First"));
+                    tipoSoloUseCase.insert(new TipoSoloDTO(2, "TestGroup Seconde"));
+                    tipoSoloUseCase.update(new TipoSoloDTO(1, "TestGroup Second"));
                 });
     }
 
     @Test
     @DisplayName("Deve inserir o objeto no banco de dados e retornar com o código gerado")
     void testUpdateWithNonEmptyName() throws ValidationException {
-        TipoSoloDTO grupoDTO = new TipoSoloDTO(0, "testUpdateWithNonEmptyName");
-        when(grupoRepository.save(any(TipoSolo.class))).thenReturn(new TipoSolo());
-        assertNotNull(grupoUseCase.insert(grupoDTO));
+        TipoSoloDTO tipoSoloDTO = new TipoSoloDTO(0, "testUpdateWithNonEmptyName");
+        when(tipoSoloRepository.save(any(TipoSolo.class))).thenReturn(new TipoSolo());
+        assertNotNull(tipoSoloUseCase.insert(tipoSoloDTO));
 
     }
 }
